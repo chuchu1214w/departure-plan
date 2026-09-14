@@ -13,7 +13,39 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* 登录门禁 */
+.authgate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--paper)}
+.ag-c{max-width:340px;width:100%;text-align:center;display:flex;flex-direction:column;gap:14px}
+.ag-icon svg{width:64px;height:64px;margin:0 auto 4px;display:block}
+.ag-c h1{font-size:22px;margin:0}
+.ag-c p{color:var(--ink2);font-size:13.5px;line-height:1.6;margin:0}
+.ag-c input{font-family:inherit;font-size:15px;padding:11px 14px;border:1.5px solid var(--line2);
+ border-radius:10px;background:var(--card);color:var(--ink);text-align:center}
+.ag-c input:focus{outline:0;border-color:var(--class)}
+.ag-c button{font-family:inherit;font-size:14.5px;font-weight:600;padding:11px 0;border-radius:10px;
+ border:0;background:var(--class);color:#fff;cursor:pointer}
+.ag-c button:disabled{opacity:.5}
+.ag-msg{min-height:18px;color:var(--class);font-weight:600}
+
+/* 账号条 */
+.who{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink3)}
+.who button{font-family:inherit;font-size:11.5px;padding:4px 10px;border-radius:20px;
+ border:1px solid var(--line2);background:transparent;color:var(--ink3);cursor:pointer}
+.who button:hover{border-color:var(--alert);color:var(--alert)}
+
+/* 加事项 */
+.listbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.addbtn{font-family:inherit;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:10px;
+ border:1px solid var(--class-bd);background:var(--class-bg);color:var(--class);cursor:pointer}
+.addbtn:hover{filter:brightness(0.97)}
+.addbtn.ai{border-color:var(--self-bd);background:var(--self-bg);color:var(--self2)}
+.td{cursor:pointer}
+.td .del-x{margin-left:auto;background:transparent;border:0;color:var(--ink3);font-size:16px;
+ cursor:pointer;padding:2px 6px;flex:none;line-height:1}
+.td .del-x:hover{color:var(--alert)}
+
+</style>
 <title>momo的植树计划</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
@@ -347,13 +379,61 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink3);font-
 .chat-h{flex-wrap:wrap;gap:8px}
 .chat-h .ln{width:100%;display:flex;align-items:center;gap:8px;order:2}
 
+
+/* 登录门禁 */
+.authgate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--paper)}
+.ag-c{max-width:340px;width:100%;text-align:center;display:flex;flex-direction:column;gap:14px}
+.ag-icon svg{width:64px;height:64px;margin:0 auto 4px;display:block}
+.ag-c h1{font-size:22px;margin:0}
+.ag-c p{color:var(--ink2);font-size:13.5px;line-height:1.6;margin:0}
+.ag-c input{font-family:inherit;font-size:15px;padding:11px 14px;border:1.5px solid var(--line2);
+ border-radius:10px;background:var(--card);color:var(--ink);text-align:center}
+.ag-c input:focus{outline:0;border-color:var(--class)}
+.ag-c button{font-family:inherit;font-size:14.5px;font-weight:600;padding:11px 0;border-radius:10px;
+ border:0;background:var(--class);color:#fff;cursor:pointer}
+.ag-c button:disabled{opacity:.5}
+.ag-msg{min-height:18px;color:var(--class);font-weight:600}
+
+/* 账号条 */
+.who{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink3)}
+.who button{font-family:inherit;font-size:11.5px;padding:4px 10px;border-radius:20px;
+ border:1px solid var(--line2);background:transparent;color:var(--ink3);cursor:pointer}
+.who button:hover{border-color:var(--alert);color:var(--alert)}
+
+/* 加事项 */
+.listbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.addbtn{font-family:inherit;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:10px;
+ border:1px solid var(--class-bd);background:var(--class-bg);color:var(--class);cursor:pointer}
+.addbtn:hover{filter:brightness(0.97)}
+.addbtn.ai{border-color:var(--self-bd);background:var(--self-bg);color:var(--self2)}
+.td{cursor:pointer}
+.td .del-x{margin-left:auto;background:transparent;border:0;color:var(--ink3);font-size:16px;
+ cursor:pointer;padding:2px 6px;flex:none;line-height:1}
+.td .del-x:hover{color:var(--alert)}
+
 </style>
 </head>
 <body>
+<div id="authGate" class="authgate">
+ <div class="ag-c">
+  <div class="ag-icon"><svg viewBox="0 0 200 200"><rect width="200" height="200" rx="42" fill="#00664f"/>
+   <rect x="66" y="46" width="68" height="10" rx="5" fill="#c9e3da"/>
+   <path d="M50 62 L150 62 L160 82 L40 82 Z" fill="#dfeee9" opacity=".9"/>
+   <path d="M42 82 Q42 68 56 68 L144 68 Q158 68 158 82 L158 172 Q158 188 142 188 L58 188 Q42 188 42 172 Z"
+    fill="#eef6f3" stroke="#c9e3da" stroke-width="4"/></svg></div>
+  <h1>momo的植树计划</h1>
+  <p>登录后手机和电脑看到的是同一份数据。输入邮箱，我们发一个登录链接过去，点一下就登进来，不用记密码。</p>
+  <input id="authEmail" type="email" inputmode="email" placeholder="你的邮箱" autocomplete="email">
+  <button id="authSend">发送登录链接</button>
+  <p class="ag-msg" id="authMsg"></p>
+ </div>
+</div>
+<div id="appRoot" hidden>
 <div class="bar"><div class="bar-in">
  <div class="brand">momo的植树计划<small id="cd">距 2/18 出发</small></div>
- <div class="tabs"><button data-v="plan" class="on">计划</button><button data-v="work">打工日历</button></div>
+ <div class="tabs"><button data-v="plan" class="on">计划</button><button data-v="event">重大事件</button><button data-v="study">学习</button><button data-v="work">打工日历</button></div>
  <div class="prog"><span class="pbar"><i id="pb"></i></span><span id="pt">0 / 39</span></div>
+ <div class="who"><span id="whoAmI"></span><button id="signOut">退出</button></div>
  <nav class="jump" id="nav">
   <a href="#now">现在要做</a><a href="#all">全部待办</a><a href="#dead">死线</a>
   <a href="#facts">查证结果</a><a href="#ask">问学科</a><a href="#cash">存款</a>
@@ -483,6 +563,29 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
 <footer>据 2026-09-14 已知信息整理，合并了你的月度计划 PDF、梨大 cyber campus 课程日程、南加大官网费用与签证流程时长。
 <span class="sync" id="sync" style="margin-top:8px"><i></i><span>存档状态未知</span></span></footer>
 </div>
+<div class="view" id="v-event">
+<header>
+ <p class="eyebrow">重大事件日历</p>
+ <h1>重大事件</h1>
+ <p class="sub">只放大事：找工作、学校申请、去医院、去教务处这类。不是每天的琐事，是错过会有后果的那种。</p>
+</header>
+<section><div class="sec-body">
+ <div class="listbar"><button class="addbtn" data-kind="event">＋ 加一件事</button></div>
+ <div class="todos" id="eventList"><div class="empty">还没有事项，点上面加一件</div></div>
+</div></section>
+</div>
+<div class="view" id="v-study">
+<header>
+ <p class="eyebrow">学习日历</p>
+ <h1>学习</h1>
+ <p class="sub">上课、考试、交作业这些固定时间点，加上每周的学习安排。「生成本周计划」需要先设置 AI 账号，见下方。</p>
+</header>
+<section><div class="sec-body">
+ <div class="listbar"><button class="addbtn" data-kind="study">＋ 加一件事</button>
+  <button class="addbtn ai" id="aiGen">✦ 生成本周学习计划</button></div>
+ <div class="todos" id="studyList"><div class="empty">还没有事项，点上面加一件</div></div>
+</div></section>
+</div>
 <div class="view" id="v-work">
 <header>
  <p class="eyebrow">打工日历</p>
@@ -571,6 +674,28 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
  </div>
  <div class="chat-f"><textarea id="chatI" rows="1" placeholder="问点什么…"></textarea><button id="chatS" aria-label="发送">↑</button></div>
 </div>
+</div>
+
+<div class="pop" id="itemPop"><div class="pop-c">
+ <h4 id="itemPopT">加一件事</h4>
+ <input id="itemTitle" type="text" placeholder="标题，比如「护照贴签取回」" style="text-align:left;font-size:16px;font-weight:600;margin-bottom:10px">
+ <input id="itemDate" type="date" style="text-align:left;font-size:15px;margin-bottom:10px">
+ <textarea id="itemNote" placeholder="备注（可留空）" rows="2"
+  style="width:100%;font-family:inherit;font-size:13.5px;padding:9px 11px;border:1.5px solid var(--line2);
+  border-radius:9px;background:var(--paper);color:var(--ink);resize:vertical;margin-bottom:4px"></textarea>
+ <div class="pop-a" style="margin-top:13px">
+  <button id="itemDelete" class="del" hidden>删除</button>
+  <button id="itemCancel">取消</button>
+  <button id="itemSave" class="pri2">保存</button>
+ </div>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="assets/supabase-client.js"></script>
+<script src="assets/store.js"></script>
+<script src="assets/auth-ui.js"></script>
+<script src="assets/calendars.js"></script>
 
 <script>
 const TODOS=[{"id": "office", "iso": "2026-09-15", "when": "9/15", "g": "学校", "gc": "dead", "t": "去学科办公室问三件事", "n": "졸업유예与寒假微积分的先后关系。默认先选课缴费后申请延期", "u": 1}, {"id": "drive-q", "iso": "2026-09-16", "when": "9/16", "g": "资格", "gc": "cert", "t": "问驾照学院报价与排课方式", "n": "预算暂按 95 만。重点是能不能约到你空闲的时段", "u": 0}, {"id": "hw1", "iso": "2026-09-18", "when": "9/18", "g": "学业", "gc": "class", "t": "广告 第1次周作业", "n": "周五 17:00 截止。周四上午做完并交", "u": 0}, {"id": "hw2", "iso": "2026-09-25", "when": "9/25", "g": "学业", "gc": "class", "t": "广告 第2次周作业", "n": "周五 17:00", "u": 0}, {"id": "adsp-reg", "iso": "2026-09-28", "when": "9/28–10/2", "g": "资格", "gc": "cert", "t": "在 dataq.or.kr 报名 ADsP 第51回", "n": "窗口只有 5 天。2027 Q1 日程未公布，这很可能是出发前唯一机会", "u": 1}, {"id": "deposit", "iso": "2026-09-30", "when": "录取后当天", "g": "签证", "gc": "visa", "t": "缴 $1,000 入学押金", "n": "<b>现在唯一卡着 I-20 的一步</b>。资金证明已交齐，押金到账学校才开始签发", "u": 1}, {"id": "hw3", "iso": "2026-10-02", "when": "10/2", "g": "学业", "gc": "class", "t": "广告 第3次周作业", "n": "周五 17:00", "u": 0}, {"id": "adsp-s1", "iso": "2026-10-05", "when": "10/5–10/18", "g": "资格", "gc": "cert", "t": "ADsP 教材通读＋真题一轮", "n": "每周 6 小时，放在周二周四上午", "u": 0}, {"id": "hw4", "iso": "2026-10-09", "when": "10/9", "g": "学业", "gc": "class", "t": "广告 第4次周作业", "n": "周五 17:00", "u": 0}, {"id": "i20", "iso": "2026-10-14", "when": "约 10/14", "g": "签证", "gc": "visa", "t": "收到 I-20 电子版", "n": "押金后 7–10 工作日。电子版打印签字即可用，不必等纸质", "u": 0}, {"id": "sevis", "iso": "2026-10-15", "when": "约 10/15", "g": "签证", "gc": "visa", "t": "交 SEVIS I-901 费 $350", "n": "面签前至少 3 个工作日，建议提前 1–2 周", "u": 1}, {"id": "drive-in", "iso": "2026-10-16", "when": "10 月", "g": "资格", "gc": "cert", "t": "报名驾照学院 2종 보통", "n": "约 13 学时。预约制，要连续时段", "u": 0}, {"id": "prof1", "iso": "2026-10-16", "when": "10 月中", "g": "教授", "gc": "self2", "t": "首次接触 CS 与传媒各一位教授", "n": "只表达读研意向，不谈推荐信", "u": 0}, {"id": "ds160", "iso": "2026-10-20", "when": "约 10/20", "g": "签证", "gc": "visa", "t": "DS-160 提交＋缴签证费 $185＋预约面签", "n": "SEVIS 后 3 工作日。首尔 F/M/J 等待不足 15 天", "u": 1}, {"id": "mid", "iso": "2026-10-21", "when": "10/21", "g": "学业", "gc": "class", "t": "广告的理解 中间考", "n": "周三 18:30。这周打工降到 2 天", "u": 1}, {"id": "adsp-s2", "iso": "2026-10-26", "when": "10/26–10/30", "g": "资格", "gc": "cert", "t": "ADsP 冲刺，每天 3 小时刷真题", "n": "期中考结束后立刻开始", "u": 0}, {"id": "adsp-ex", "iso": "2026-10-31", "when": "10/31", "g": "资格", "gc": "cert", "t": "ADsP 考试", "n": "周六 10:00–11:30。这天不排班", "u": 1}, {"id": "iv", "iso": "2026-11-04", "when": "约 11/4", "g": "签证", "gc": "visa", "t": "F-1 面签", "n": "口头通过不等于已签发，护照到手才算完成", "u": 1}, {"id": "hw5", "iso": "2026-11-06", "when": "11/6", "g": "学业", "gc": "class", "t": "广告 第5次周作业", "n": "周五 17:00", "u": 0}, {"id": "hw6", "iso": "2026-11-13", "when": "11/13", "g": "学业", "gc": "class", "t": "广告 第6次周作业", "n": "周五 17:00", "u": 0}, {"id": "pres", "iso": "2026-11-16", "when": "11/16–11/22", "g": "学业", "gc": "class", "t": "我的发表（第 12 周）", "n": "全学期只做一次。提前一周准备，3 小时", "u": 1}, {"id": "passport", "iso": "2026-11-18", "when": "约 11/18", "g": "签证", "gc": "visa", "t": "贴签护照寄回到手", "n": "面签后 5–10 工作日。比最晚线早 85 天，缓冲留给 221(g)", "u": 0}, {"id": "adsp-r", "iso": "2026-11-20", "when": "11/20", "g": "资格", "gc": "cert", "t": "ADsP 成绩发表", "n": "上午 10:00", "u": 0}, {"id": "calc-reg", "iso": "2026-11-20", "when": "11/20", "g": "学校", "gc": "dead", "t": "寒假微积分 선수강신청", "n": "<b>必须排在延期申请之前</b>。同一天还有第 7 次周作业截止", "u": 1}, {"id": "hw7", "iso": "2026-11-20", "when": "11/20", "g": "学业", "gc": "class", "t": "广告 第7次周作业", "n": "周五 17:00。和选课同一天", "u": 0}, {"id": "defer", "iso": "2026-11-21", "when": "11/21–11/27", "g": "学校", "gc": "dead", "t": "申请졸업의사（延期）", "n": "选完课之后再做。保住应届生身份与 F-1 说服力", "u": 1}, {"id": "hw8", "iso": "2026-11-27", "when": "11/27", "g": "学业", "gc": "class", "t": "广告 第8次周作业", "n": "周五 17:00。最后一次", "u": 0}, {"id": "prof2", "iso": "2026-12-01", "when": "12 月初", "g": "教授", "gc": "self2", "t": "正式请求推荐信承诺", "n": "附简历、成绩单、读研方向说明。避开期末周", "u": 1}, {"id": "calc-pay", "iso": "2026-12-04", "when": "12 月初", "g": "学校", "gc": "dead", "t": "微积分缴费截止", "n": "缴完才算选课成功", "u": 1}, {"id": "final", "iso": "2026-12-09", "when": "12/9", "g": "学业", "gc": "class", "t": "广告的理解 期末考", "n": "周三 18:30。这周打工降到 2 天", "u": 1}, {"id": "sem-end", "iso": "2026-12-13", "when": "12/13", "g": "学业", "gc": "class", "t": "学期结束", "n": "线代与毕业作品期末也在这周", "u": 0}, {"id": "flight", "iso": "2026-12-15", "when": "F-1 下来后", "g": "行前", "gc": "life", "t": "订单程机票 ICN→LAX", "n": "约 $800。购票很快，不占计划时间", "u": 0}, {"id": "calc", "iso": "2026-12-28", "when": "12/28–1/15", "g": "学业", "gc": "class", "t": "上寒假微积分", "n": "每天 12:30–15:30 周一至周五。打工降到 2 天", "u": 1}, {"id": "sublet", "iso": "2027-01-15", "when": "1 月", "g": "行前", "gc": "life", "t": "找洛杉矶韩国城短租，付押金", "n": "约 $1,000。1/15 微积分结束后再集中处理", "u": 0}, {"id": "goal", "iso": "2027-01-25", "when": "1/25", "g": "钱", "gc": "work", "t": "越过 2,000 万存款目标", "n": "之后还有 24 天在继续存", "u": 0}, {"id": "tuition", "iso": "2027-02-01", "when": "开课前", "g": "签证", "gc": "visa", "t": "缴学费余款", "n": "学费 $6,500 扣掉押金实缴 $5,500，另加服务费 $750 与保险 $1,050", "u": 1}, {"id": "prof3", "iso": "2027-02-05", "when": "2 月上旬", "g": "教授", "gc": "self2", "t": "当面向教授告别，确认后续联系方式", "n": "人在国外再找老师，回复率会低很多", "u": 1}, {"id": "pack", "iso": "2027-02-11", "when": "2/11 起", "g": "行前", "gc": "life", "t": "打包、退租、行政手续", "n": "打工降到 2 天/周", "u": 0}, {"id": "depart", "iso": "2027-02-18", "when": "2/18", "g": "行前", "gc": "life", "t": "飞洛杉矶", "n": "到 2/25 开课只有 7 天", "u": 1}];
