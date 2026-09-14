@@ -13,39 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}
-/* 登录门禁 */
-.authgate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--paper)}
-.ag-c{max-width:340px;width:100%;text-align:center;display:flex;flex-direction:column;gap:14px}
-.ag-icon svg{width:64px;height:64px;margin:0 auto 4px;display:block}
-.ag-c h1{font-size:22px;margin:0}
-.ag-c p{color:var(--ink2);font-size:13.5px;line-height:1.6;margin:0}
-.ag-c input{font-family:inherit;font-size:15px;padding:11px 14px;border:1.5px solid var(--line2);
- border-radius:10px;background:var(--card);color:var(--ink);text-align:center}
-.ag-c input:focus{outline:0;border-color:var(--class)}
-.ag-c button{font-family:inherit;font-size:14.5px;font-weight:600;padding:11px 0;border-radius:10px;
- border:0;background:var(--class);color:#fff;cursor:pointer}
-.ag-c button:disabled{opacity:.5}
-.ag-msg{min-height:18px;color:var(--class);font-weight:600}
-
-/* 账号条 */
-.who{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink3)}
-.who button{font-family:inherit;font-size:11.5px;padding:4px 10px;border-radius:20px;
- border:1px solid var(--line2);background:transparent;color:var(--ink3);cursor:pointer}
-.who button:hover{border-color:var(--alert);color:var(--alert)}
-
-/* 加事项 */
-.listbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.addbtn{font-family:inherit;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:10px;
- border:1px solid var(--class-bd);background:var(--class-bg);color:var(--class);cursor:pointer}
-.addbtn:hover{filter:brightness(0.97)}
-.addbtn.ai{border-color:var(--self-bd);background:var(--self-bg);color:var(--self2)}
-.td{cursor:pointer}
-.td .del-x{margin-left:auto;background:transparent;border:0;color:var(--ink3);font-size:16px;
- cursor:pointer;padding:2px 6px;flex:none;line-height:1}
-.td .del-x:hover{color:var(--alert)}
-
-</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>momo的植树计划</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
@@ -411,6 +379,10 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink3);font-
  cursor:pointer;padding:2px 6px;flex:none;line-height:1}
 .td .del-x:hover{color:var(--alert)}
 
+
+.stsub{display:none}
+.stsub.on{display:block}
+
 </style>
 </head>
 <body>
@@ -570,20 +542,66 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
  <p class="sub">只放大事：找工作、学校申请、去医院、去教务处这类。不是每天的琐事，是错过会有后果的那种。</p>
 </header>
 <section><div class="sec-body">
- <div class="listbar"><button class="addbtn" data-kind="event">＋ 加一件事</button></div>
- <div class="todos" id="eventList"><div class="empty">还没有事项，点上面加一件</div></div>
+ <div class="listbar">
+  <button class="addbtn" data-kind="event" id="evAdd">＋ 加一件事</button>
+  <button class="addbtn ai" id="evImport" hidden>↓ 导入之前整理好的重大事件</button>
+ </div>
+ <div class="calnav">
+  <button id="evPrev" aria-label="上个月">‹</button>
+  <button id="evNext" aria-label="下个月">›</button>
+  <h3 id="evMlabel"></h3>
+  <div class="mi" id="evMinfo"></div>
+ </div>
+ <div class="cgrid" id="evGrid"></div>
+ <div style="margin-top:18px">
+  <h4 id="evDayTitle" style="margin:0 0 10px;font-size:14px;color:var(--ink2)"></h4>
+  <div class="todos" id="evDayList"><div class="empty">点日历上的某一天，看那天的事项</div></div>
+ </div>
 </div></section>
 </div>
 <div class="view" id="v-study">
 <header>
  <p class="eyebrow">学习日历</p>
  <h1>学习</h1>
- <p class="sub">上课、考试、交作业这些固定时间点，加上每周的学习安排。「生成本周计划」需要先设置 AI 账号，见下方。</p>
+ <p class="sub">上课、考试、交作业这些固定时间点。先看月，再看这一周，再看某一天具体排了什么。</p>
 </header>
 <section><div class="sec-body">
- <div class="listbar"><button class="addbtn" data-kind="study">＋ 加一件事</button>
-  <button class="addbtn ai" id="aiGen">✦ 生成本周学习计划</button></div>
- <div class="todos" id="studyList"><div class="empty">还没有事项，点上面加一件</div></div>
+ <div class="listbar">
+  <button class="addbtn" data-kind="study" id="stAdd">＋ 加一件事</button>
+  <button class="addbtn ai" id="stImport" hidden>↓ 导入之前整理好的学业日程</button>
+  <button class="addbtn ai" id="aiGen">✦ 生成本周学习计划</button>
+ </div>
+ <div class="modes" id="stSub" style="margin-bottom:16px">
+  <button data-sub="m" class="on">月</button><button data-sub="w">周</button><button data-sub="d">日程</button>
+ </div>
+
+ <div class="stsub on" id="st-m">
+  <div class="calnav">
+   <button id="stMPrev" aria-label="上个月">‹</button>
+   <button id="stMNext" aria-label="下个月">›</button>
+   <h3 id="stMlabel"></h3>
+   <div class="mi" id="stMinfo"></div>
+  </div>
+  <div class="cgrid" id="stGrid"></div>
+ </div>
+
+ <div class="stsub" id="st-w">
+  <div class="calnav">
+   <button id="stWPrev" aria-label="上一周">‹</button>
+   <button id="stWNext" aria-label="下一周">›</button>
+   <h3 id="stWlabel"></h3>
+  </div>
+  <div id="stWeekBody"></div>
+ </div>
+
+ <div class="stsub" id="st-d">
+  <div class="calnav">
+   <button id="stDPrev" aria-label="前一天">‹</button>
+   <button id="stDNext" aria-label="后一天">›</button>
+   <h3 id="stDlabel"></h3>
+  </div>
+  <div class="chain" id="stDayBody"></div>
+ </div>
 </div></section>
 </div>
 <div class="view" id="v-work">
@@ -694,6 +712,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
 <script src="config.js"></script>
 <script src="assets/supabase-client.js"></script>
 <script src="assets/store.js"></script>
+<script src="assets/seed-data.js"></script>
 <script src="assets/auth-ui.js"></script>
 <script src="assets/calendars.js"></script>
 
