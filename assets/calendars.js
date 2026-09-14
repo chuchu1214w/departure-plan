@@ -133,25 +133,58 @@
   document.getElementById("stMNext").onclick = () => { stCurM.setMonth(stCurM.getMonth()+1); renderStudyMonth(); };
 
   function mondayOf(d) { const x = new Date(d); const wd = (x.getDay()+6)%7; x.setDate(x.getDate()-wd); x.setHours(0,0,0,0); return x; }
+
+  // 课表格子：08:00–23:30，每 15 分钟一行
+  const TT0 = 8*60, TT1 = 23*60+30, TSTEP = 15;
+  function ttRow(min) { return Math.round((min-TT0)/TSTEP) + 1; }
+  function minsOf(iso_) { const d = new Date(iso_); return d.getHours()*60 + d.getMinutes(); }
+
   function renderStudyWeek() {
     const mon = mondayOf(stCurW);
     const sun = new Date(mon); sun.setDate(mon.getDate()+6);
     document.getElementById("stWlabel").textContent = `${mon.getMonth()+1}/${mon.getDate()} – ${sun.getMonth()+1}/${sun.getDate()}`;
-    let h = "";
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(mon); d.setDate(mon.getDate()+i);
+
+    const days = []; for (let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); days.push(d); }
+    const nRows = Math.round((TT1-TT0)/TSTEP);
+
+    // 全天 / 没填时间的事项，列成小胶囊放在格子上面（不进滚动区）
+    const allday = [];
+    days.forEach((d,i) => { itemsOnDate("study", iso(d)).forEach(it => { if (!it.start_at) allday.push(it); }); });
+    const alldayHtml = allday.length ? '<div class="tt-allday">' + allday.map(it =>
+      `<span class="tt-chip" data-id="${it.id}">${fmtDateShort(it.date)} · ${escapeHtml(it.title)}</span>`).join("") + '</div>' : '';
+
+    // 格子本体单独拼，外面统一包一层横向滚动容器
+    let h = '<div class="ttable">';
+    h += '<div class="tt-corner"></div>';
+    days.forEach((d,i) => { h += `<div class="tt-dh">周${WD[i]}<small>${d.getMonth()+1}/${d.getDate()}</small></div>`; });
+
+    h += `<div class="tt-gutter" style="grid-template-rows:repeat(${nRows},7px)">`;
+    for (let t=TT0; t<TT1; t+=60) h += `<div class="tt-tick" style="grid-row:${ttRow(t)}/span 4"><span>${String(Math.floor(t/60)).padStart(2,"0")}</span></div>`;
+    h += '</div>';
+
+    days.forEach((d) => {
       const k = iso(d);
-      const items = itemsOnDate("study", k).sort((a,b) => (a.start_at||"").localeCompare(b.start_at||""));
-      h += `<div style="margin-bottom:16px">
-        <h4 style="margin:0 0 8px;font-size:13px;color:var(--ink3);font-family:'Archivo',sans-serif">周${WD[i]} · ${d.getMonth()+1}/${d.getDate()}</h4>
-        <div class="todos">${items.length ? items.map(row).join("") : '<div class="empty" style="padding:13px">没有安排</div>'}</div>
-      </div>`;
-    }
-    document.getElementById("stWeekBody").innerHTML = h;
+      const items = itemsOnDate("study", k).filter(it => it.start_at);
+      h += `<div class="tt-col" style="grid-template-rows:repeat(${nRows},7px)">`;
+      for (let t=TT0; t<TT1; t+=60) h += `<div class="tt-tick" style="grid-row:${ttRow(t)}/span 4"></div>`;
+      items.forEach(it => {
+        const s0 = Math.max(TT0, Math.min(TT1, minsOf(it.start_at)));
+        const e0 = it.end_at ? Math.max(s0+TSTEP, Math.min(TT1, minsOf(it.end_at))) : Math.min(TT1, s0+90);
+        h += `<div class="tt-blk" data-id="${it.id}" style="grid-row:${ttRow(s0)}/${ttRow(e0)}">
+          <b>${escapeHtml(it.title)}</b><small>${String(Math.floor(s0/60)).padStart(2,"0")}:${String(s0%60).padStart(2,"0")}</small></div>`;
+      });
+      h += '</div>';
+    });
+    h += '</div>';
+    document.getElementById("stWeekBody").innerHTML = alldayHtml + '<div class="ttwrap">' + h + '</div>';
   }
   document.getElementById("stWPrev").onclick = () => { stCurW.setDate(stCurW.getDate()-7); renderStudyWeek(); };
   document.getElementById("stWNext").onclick = () => { stCurW.setDate(stCurW.getDate()+7); renderStudyWeek(); };
-  wireRowClicks(document.getElementById("stWeekBody"), "study");
+  document.getElementById("stWeekBody").addEventListener("click", (e) => {
+    const el = e.target.closest(".tt-blk, .tt-chip"); if (!el) return;
+    const item = cache.study.find(x => x.id === el.dataset.id);
+    if (item) openPop("study", item);
+  });
 
   function renderStudyDay() {
     const k = iso(stCurD);
@@ -204,13 +237,19 @@
   const elSave = document.getElementById("itemSave");
   const elDel = document.getElementById("itemDelete");
   const elCancel = document.getElementById("itemCancel");
+  const elStart = document.getElementById("itemStart");
+  const elEnd = document.getElementById("itemEnd");
   let editing = null;
+
+  function hhmm(iso) { if (!iso) return ""; const d = new Date(iso); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
 
   function openPop(kind, item, presetDate) {
     editing = { kind, id: item ? item.id : null };
     elT.textContent = item ? "编辑" : "加一件事";
     elTitle.value = item ? item.title : "";
     elDate.value = item ? (item.date || "") : (presetDate || "");
+    elStart.value = item ? hhmm(item.start_at) : "";
+    elEnd.value = item ? hhmm(item.end_at) : "";
     elNote.value = item ? (item.note || "") : "";
     elDel.hidden = !item;
     pop.classList.add("on");
@@ -227,10 +266,20 @@
     else { renderStudyMonth(); renderStudyWeek(); renderStudyDay(); toggleImportBtn("study"); }
   }
 
+  function toIso(dateStr, timeStr) {
+    if (!dateStr || !timeStr) return null;
+    const [y,m,d] = dateStr.split("-").map(Number);
+    const [hh,mm] = timeStr.split(":").map(Number);
+    return new Date(y, m-1, d, hh, mm).toISOString();
+  }
   elSave.onclick = async () => {
     const title = elTitle.value.trim();
     if (!title) { elTitle.focus(); return; }
-    const fields = { title, date: elDate.value || null, note: elNote.value.trim() };
+    const fields = {
+      title, date: elDate.value || null, note: elNote.value.trim(),
+      start_at: toIso(elDate.value, elStart.value),
+      end_at: toIso(elDate.value, elEnd.value)
+    };
     elSave.disabled = true;
     try {
       if (editing.id) await window.Store.update(editing.id, fields);
@@ -271,6 +320,27 @@
   }
   document.getElementById("evImport").addEventListener("click", () => doImport("event"));
   document.getElementById("stImport").addEventListener("click", () => doImport("study"));
+
+  async function doImportSchedule() {
+    const items = window.SEED_SCHEDULE || [];
+    if (!items.length) return;
+    const btn = document.getElementById("stImportSched");
+    btn.disabled = true; const label = btn.textContent; btn.textContent = "导入中…";
+    try {
+      for (const it of items) {
+        await window.Store.add("study", {
+          title: it.title, date: it.date, note: it.note || "",
+          start_at: toIso(it.date, it.start), end_at: toIso(it.date, it.end)
+        });
+      }
+      await refresh("study");
+      btn.hidden = true;
+    } catch (e) {
+      alert("导入失败：" + (e.message || e));
+      btn.disabled = false; btn.textContent = label;
+    }
+  }
+  document.getElementById("stImportSched").addEventListener("click", doImportSchedule);
 
   // =========================================================
   // 登录后：首次加载 + 实时订阅

@@ -28,6 +28,29 @@
 .fab{bottom:78px}
 @media(min-width:761px){.wrap{padding-bottom:96px}.fab{bottom:88px}}
 
+
+/* 课表格子（学习周视图） */
+.ttwrap{overflow-x:auto}
+.ttable{display:grid;grid-template-columns:40px repeat(7,72px);width:544px;
+ border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.tt-corner{background:var(--paper);border-bottom:1px solid var(--line2);border-right:1px solid var(--line)}
+.tt-dh{background:var(--paper);padding:7px 2px;text-align:center;font-size:10.5px;font-weight:600;
+ border-bottom:1px solid var(--line2);border-right:1px solid var(--line);color:var(--ink2)}
+.tt-dh small{display:block;font-weight:400;color:var(--ink3);font-size:9.5px;font-variant-numeric:tabular-nums}
+.tt-dh:last-child{border-right:0}
+.tt-gutter,.tt-col{display:grid;position:relative;border-right:1px solid var(--line)}
+.tt-col:last-child{border-right:0}
+.tt-tick{border-top:1px solid var(--line);position:relative}
+.tt-tick span{position:absolute;top:-6px;right:3px;font-size:8.5px;color:var(--ink3);
+ font-family:"Archivo",sans-serif;font-variant-numeric:tabular-nums}
+.tt-blk{grid-column:1;margin:1px 2px;border-radius:5px;padding:3px 5px;overflow:hidden;
+ background:var(--class-bg);border:1px solid var(--class-bd);color:var(--class);cursor:pointer;line-height:1.22}
+.tt-blk b{display:block;font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt-blk small{display:block;font-size:8.5px;opacity:.78;font-family:"Archivo",sans-serif}
+.tt-allday{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.tt-chip{font-size:10.5px;padding:4px 9px;border-radius:20px;background:var(--self-bg);
+ color:var(--self2);border:1px solid var(--self-bd);cursor:pointer}
+
 </style>
 <title>momo的植树计划</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -413,6 +436,29 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink3);font-
 .fab{bottom:78px}
 @media(min-width:761px){.wrap{padding-bottom:96px}.fab{bottom:88px}}
 
+
+/* 课表格子（学习周视图） */
+.ttwrap{overflow-x:auto}
+.ttable{display:grid;grid-template-columns:40px repeat(7,72px);width:544px;
+ border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.tt-corner{background:var(--paper);border-bottom:1px solid var(--line2);border-right:1px solid var(--line)}
+.tt-dh{background:var(--paper);padding:7px 2px;text-align:center;font-size:10.5px;font-weight:600;
+ border-bottom:1px solid var(--line2);border-right:1px solid var(--line);color:var(--ink2)}
+.tt-dh small{display:block;font-weight:400;color:var(--ink3);font-size:9.5px;font-variant-numeric:tabular-nums}
+.tt-dh:last-child{border-right:0}
+.tt-gutter,.tt-col{display:grid;position:relative;border-right:1px solid var(--line)}
+.tt-col:last-child{border-right:0}
+.tt-tick{border-top:1px solid var(--line);position:relative}
+.tt-tick span{position:absolute;top:-6px;right:3px;font-size:8.5px;color:var(--ink3);
+ font-family:"Archivo",sans-serif;font-variant-numeric:tabular-nums}
+.tt-blk{grid-column:1;margin:1px 2px;border-radius:5px;padding:3px 5px;overflow:hidden;
+ background:var(--class-bg);border:1px solid var(--class-bd);color:var(--class);cursor:pointer;line-height:1.22}
+.tt-blk b{display:block;font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt-blk small{display:block;font-size:8.5px;opacity:.78;font-family:"Archivo",sans-serif}
+.tt-allday{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.tt-chip{font-size:10.5px;padding:4px 9px;border-radius:20px;background:var(--self-bg);
+ color:var(--self2);border:1px solid var(--self-bd);cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -606,6 +652,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
  <div class="listbar">
   <button class="addbtn" data-kind="study" id="stAdd">＋ 加一件事</button>
   <button class="addbtn ai" id="stImport" hidden>↓ 导入之前整理好的学业日程</button>
+  <button class="addbtn ai" id="stImportSched">↓ 导入真实课表与线代进度（59 条）</button>
   <button class="addbtn ai" id="aiGen">✦ 生成本周学习计划</button>
  </div>
  <div class="modes" id="stSub" style="margin-bottom:16px">
@@ -779,6 +826,11 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
  <h4 id="itemPopT">加一件事</h4>
  <input id="itemTitle" type="text" placeholder="标题，比如「护照贴签取回」" style="text-align:left;font-size:16px;font-weight:600;margin-bottom:10px">
  <input id="itemDate" type="date" style="text-align:left;font-size:15px;margin-bottom:10px">
+ <div style="display:flex;gap:8px;margin-bottom:10px">
+  <input id="itemStart" type="time" style="flex:1;text-align:left;font-size:14px">
+  <input id="itemEnd" type="time" style="flex:1;text-align:left;font-size:14px">
+ </div>
+ <div style="font-size:11px;color:var(--ink3);margin:-6px 0 10px">开始 / 结束时间，不填就是全天事项</div>
  <textarea id="itemNote" placeholder="备注（可留空）" rows="2"
   style="width:100%;font-family:inherit;font-size:13.5px;padding:9px 11px;border:1.5px solid var(--line2);
   border-radius:9px;background:var(--paper);color:var(--ink);resize:vertical;margin-bottom:4px"></textarea>
@@ -794,6 +846,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
 <script src="assets/supabase-client.js"></script>
 <script src="assets/store.js"></script>
 <script src="assets/seed-data.js"></script>
+<script src="assets/seed-schedule.js"></script>
 <script src="assets/auth-ui.js"></script>
 <script src="assets/calendars.js"></script>
 <script src="assets/review.js"></script>

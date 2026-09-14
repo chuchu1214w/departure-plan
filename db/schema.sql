@@ -49,3 +49,6 @@ $$ language plpgsql;
 drop trigger if exists events_set_updated_at on events;
 create trigger events_set_updated_at before update on events
   for each row execute function set_updated_at();
+
+-- 2026-09-15 追加：支持真正带时间段的日程（课表格子视图要用）
+alter table events add column if not exists end_at timestamptz;
