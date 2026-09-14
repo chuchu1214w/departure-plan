@@ -84,8 +84,28 @@
     document.getElementById("rv-m").classList.toggle("on", b.dataset.sub === "m");
   });
 
-  document.getElementById("rvAI").addEventListener("click", () => {
-    alert("这个功能还没设置好。需要先开一个带账单的 AI 接口账号，等设置好我再通知你。");
+  const rvAIBtn = document.getElementById("rvAI");
+  const rvAIOut = document.getElementById("rvAIOut");
+  rvAIBtn.addEventListener("click", async () => {
+    rvAIBtn.disabled = true; rvAIOut.style.display = "block"; rvAIOut.textContent = "生成中…";
+    try {
+      const active = ["d","w","m"].find(x => document.getElementById("rv-"+x).classList.contains("on")) || "d";
+      let label, s;
+      if (active === "d") { label = document.getElementById("rvDlabel").textContent; s = statsBetween(iso(rvD), iso(rvD)); }
+      else if (active === "w") { const mon = mondayOf(rvW), sun = new Date(mon); sun.setDate(mon.getDate()+6); label = document.getElementById("rvWlabel").textContent; s = statsBetween(iso(mon), iso(sun)); }
+      else { const y=rvM.getFullYear(), m=rvM.getMonth(); label = document.getElementById("rvMlabel").textContent; s = statsBetween(iso(new Date(y,m,1)), iso(new Date(y,m+1,0))); }
+      const prompt = `帮一个梨花女子大学学生做${active==="d"?"当天":active==="w"?"这周":"这个月"}的复盘（${label}）。
+数据：学习事项完成 ${s.studyDone}/${s.studyTotal}，重大事件完成 ${s.evDone}/${s.evTotal}，
+打工收入 ${(s.income/10000).toFixed(1)}만，录入 ${s.workDays} 天。
+用中文写一段简短点评（100字以内），说说做得好的地方和该注意的地方，语气直接不要客套。`;
+      const { data, error } = await window.sb.functions.invoke("ai-generate", { body: { prompt } });
+      if (error) throw error;
+      if (data && data.error) throw new Error(data.error + (data.detail ? "："+data.detail : ""));
+      rvAIOut.textContent = data.text || "（AI 没有返回内容）";
+    } catch (e) {
+      rvAIOut.textContent = "生成失败：" + (e.message || e);
+    }
+    rvAIBtn.disabled = false;
   });
 
   async function loadCloud() {

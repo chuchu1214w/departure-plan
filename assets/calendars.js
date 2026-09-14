@@ -221,9 +221,33 @@
   });
   document.getElementById("stAdd").addEventListener("click", () => openPop("study", null, iso(stCurD)));
 
+  async function callAI(prompt) {
+    const { data, error } = await window.sb.functions.invoke("ai-generate", { body: { prompt } });
+    if (error) throw error;
+    if (data && data.error) throw new Error(data.error + (data.detail ? "："+data.detail : ""));
+    return data.text || "（AI 没有返回内容）";
+  }
+
   const aiBtn = document.getElementById("aiGen");
-  if (aiBtn) aiBtn.addEventListener("click", () => {
-    alert("这个功能还没设置好。需要先开一个带账单的 AI 接口账号，等设置好我再通知你。");
+  const aiOut = document.getElementById("aiOut");
+  if (aiBtn) aiBtn.addEventListener("click", async () => {
+    aiBtn.disabled = true; aiOut.style.display = "block"; aiOut.textContent = "生成中…";
+    try {
+      const mon = mondayOf(stCurW);
+      const days = []; for (let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); days.push(d); }
+      const fixed = [];
+      days.forEach(d => itemsOnDate("study", iso(d)).forEach(it => fixed.push(`${iso(d)} ${it.start_at?new Date(it.start_at).toTimeString().slice(0,5):"全天"} ${it.title}`)));
+      const prompt = `你在帮一个梨花女子大学学生排本周（${iso(mon)} 起 7 天）的学习计划。
+她本周已经固定的课程和事项：
+${fixed.length ? fixed.join("\n") : "（这周没有录入任何固定课程）"}
+
+请在这些固定时间之外，给她安排具体的自习时段（比如背单词、复习、预习、作业），
+每条一行，格式「星期几 几点-几点 内容」，中文回答，8条以内，不要太啰嗦。`;
+      aiOut.textContent = await callAI(prompt);
+    } catch (e) {
+      aiOut.textContent = "生成失败：" + (e.message || e);
+    }
+    aiBtn.disabled = false;
   });
 
   // =========================================================
