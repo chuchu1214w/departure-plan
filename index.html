@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#00664f">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="赴美前的月度计划、待办与存钱进度">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="出发计划">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>出发前的六个月</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+:root{--paper:#f3f6f4;--card:#fff;--ink:#0f1f1a;--ink2:#435751;--ink3:#798c86;
+--line:#dae4e0;--line2:#bfcec8;
+--work:#8a6118;--work-bg:#f6ecd8;--work-bd:#dcc08a;
+--class:#00664f;--class-bg:#dfeee9;--class-bd:#95c5b5;
+--self2:#2f5f72;--self-bg:#e0ecf0;--self-bd:#9dc0cc;
+--alert:#9c2f26;--alert-bg:#f7e0dd;--accent:#00664f;
+--visa:#2f5f72;--visa-bg:#e0ecf0;--cert:#8a6118;--cert-bg:#f6ecd8;
+--dead:#9c2f26;--dead-bg:#f7e0dd;--life:#5a6b66;--life-bg:#e7ecea;
+--shadow:0 1px 2px rgba(15,31,26,.06),0 6px 18px rgba(15,31,26,.05);}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0c1512;--card:#131d19;--ink:#e3ede9;--ink2:#9fb3ac;--ink3:#71857e;
+--line:#233029;--line2:#31423b;
+--work:#dcae63;--work-bg:#2e230f90;--work-bd:#634c20;
+--class:#57bd9e;--class-bg:#0a2c2390;--class-bd:#2a5f4f;
+--self2:#87b6c8;--self-bg:#12262e90;--self-bd:#2f5464;
+--alert:#e88a7e;--alert-bg:#3a1c1890;--accent:#57bd9e;
+--visa:#87b6c8;--visa-bg:#12262e90;--cert:#dcae63;--cert-bg:#2e230f90;
+--dead:#e88a7e;--dead-bg:#3a1c1890;--life:#93a8a1;--life-bg:#1a2421;
+--shadow:0 1px 2px rgba(0,0,0,.45),0 6px 18px rgba(0,0,0,.32);}}
+:root[data-theme="dark"]{--paper:#0c1512;--card:#131d19;--ink:#e3ede9;--ink2:#9fb3ac;--ink3:#71857e;
+--line:#233029;--line2:#31423b;
+--work:#dcae63;--work-bg:#2e230f90;--work-bd:#634c20;
+--class:#57bd9e;--class-bg:#0a2c2390;--class-bd:#2a5f4f;
+--self2:#87b6c8;--self-bg:#12262e90;--self-bd:#2f5464;
+--alert:#e88a7e;--alert-bg:#3a1c1890;--accent:#57bd9e;
+--visa:#87b6c8;--visa-bg:#12262e90;--cert:#dcae63;--cert-bg:#2e230f90;
+--dead:#e88a7e;--dead-bg:#3a1c1890;--life:#93a8a1;--life-bg:#1a2421;
+--shadow:0 1px 2px rgba(0,0,0,.45),0 6px 18px rgba(0,0,0,.32);}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans SC","Archivo",-apple-system,"PingFang SC","Apple SD Gothic Neo",sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.mono{font-family:"Archivo","Noto Sans SC",sans-serif}
+.mono,.num{font-variant-numeric:tabular-nums}
+
+/* sticky bar */
+.bar{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line2);
+ box-shadow:0 1px 8px rgba(0,0,0,.04)}
+.bar-in{max-width:1180px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{font-family:"Archivo",sans-serif;font-weight:700;font-size:15px;letter-spacing:-.02em;white-space:nowrap}
+.brand small{display:block;font-weight:400;font-size:11px;color:var(--ink3);letter-spacing:0}
+.prog{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--ink2);white-space:nowrap}
+.pbar{width:96px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--class);width:0;transition:width .3s}
+nav.jump{display:flex;gap:3px;margin-left:auto;flex-wrap:wrap}
+nav.jump a{font-size:12.5px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:6px;white-space:nowrap}
+nav.jump a:hover{background:var(--paper);color:var(--ink)}
+nav.jump a.on{background:var(--self-bg);color:var(--self2);font-weight:600}
+nav.jump a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:34px 24px 80px;display:flex;flex-direction:column;gap:34px}
+h1{font-size:clamp(26px,4.4vw,40px);font-weight:700;letter-spacing:-.022em;margin:0;line-height:1.15;text-wrap:balance}
+.sub{color:var(--ink2);margin:10px 0 0;max-width:60ch;font-size:15px}
+.eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 11px}
+h2{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0}
+.lede{color:var(--ink2);font-size:14px;margin:6px 0 16px;max-width:64ch}
+
+/* collapsible section */
+section{scroll-margin-top:64px}
+.sec-h{display:flex;align-items:baseline;gap:11px;cursor:pointer;user-select:none;
+ border-bottom:1px solid var(--line2);padding-bottom:9px}
+.sec-h:hover h2{color:var(--accent)}
+.sec-h .tw{font-size:11px;color:var(--ink3);transition:transform .2s;font-family:"Archivo",sans-serif}
+.sec-h .cnt{margin-left:auto;font-size:11.5px;color:var(--ink3);font-variant-numeric:tabular-nums}
+section.closed .sec-h .tw{transform:rotate(-90deg)}
+section.closed .sec-body{display:none}
+.sec-body{padding-top:16px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);
+ border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.st{background:var(--card);padding:16px 18px}
+.st dt{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:600;margin:0}
+.st dd{margin:6px 0 0;font-family:"Archivo",sans-serif;font-weight:700;font-size:25px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.st .u{font-size:13px;font-weight:500;color:var(--ink2);margin-left:3px}
+.st small{display:block;color:var(--ink3);font-size:12px;margin-top:4px;font-weight:400}
+.good{color:var(--class)}
+
+/* todo */
+.todos{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:10px;
+ background:var(--card);overflow:hidden;box-shadow:var(--shadow)}
+.td{display:grid;grid-template-columns:26px 104px 1fr;gap:13px;padding:13px 17px;border-bottom:1px solid var(--line);align-items:start}
+.td:last-child{border-bottom:0}
+.td:hover{background:var(--paper)}
+.cb{width:19px;height:19px;margin-top:1px;border-radius:5px;border:1.5px solid var(--line2);background:transparent;
+ cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex:none;transition:all .15s}
+.cb:hover{border-color:var(--accent)}
+.cb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cb svg{width:12px;height:12px;opacity:0;transition:opacity .15s}
+.td.done .cb{background:var(--class);border-color:var(--class)}
+.td.done .cb svg{opacity:1}
+.td.done .ti,.td.done .tdt{text-decoration:line-through;color:var(--ink3)}
+.td.done .tn{color:var(--ink3)}
+.tdt{font-family:"Archivo",sans-serif;font-weight:600;font-size:12.5px;color:var(--ink2);padding-top:1px;white-space:nowrap}
+.tdt small{display:block;font-weight:400;color:var(--ink3);font-size:11px}
+.ti{display:block;font-size:14px;font-weight:600;line-height:1.4}
+.tn{display:block;font-size:12.5px;color:var(--ink2);margin-top:2px;line-height:1.45}
+.tag2{display:inline-block;font-size:10.5px;letter-spacing:.05em;font-weight:600;padding:1px 7px;border-radius:20px;margin-right:7px;vertical-align:1px}
+.g-class{background:var(--class-bg);color:var(--class)} .g-visa{background:var(--visa-bg);color:var(--visa)}
+.g-cert{background:var(--cert-bg);color:var(--cert)} .g-dead{background:var(--dead-bg);color:var(--dead)}
+.g-self2{background:var(--self-bg);color:var(--self2)} .g-life{background:var(--life-bg);color:var(--life)}
+.g-work{background:var(--work-bg);color:var(--work)}
+.td.urg .ti{color:var(--alert)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.filters button{font-size:12.5px;padding:5px 12px;border-radius:20px;border:1px solid var(--line2);
+ background:var(--card);color:var(--ink2);cursor:pointer;font-family:inherit}
+.filters button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.filters button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.filters .sp{margin-left:auto;font-size:12px;color:var(--ink3)}
+.empty{padding:28px;text-align:center;color:var(--ink3);font-size:13.5px}
+
+/* tables */
+.tw2{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card);box-shadow:var(--shadow)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px}
+table.t th{text-align:left;padding:10px 14px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:600;border-bottom:1px solid var(--line2)}
+table.t th.r,table.t td.r{text-align:right;font-variant-numeric:tabular-nums;font-family:"Archivo",sans-serif}
+table.t td{padding:9px 14px;border-bottom:1px solid var(--line)}
+table.t tr:last-child td{border-bottom:0}
+table.t tr.sum td{font-weight:700;background:var(--paper);border-top:1px solid var(--line2)}
+.src2{font-size:11.5px;color:var(--ink3)}
+.dtc{font-variant-numeric:tabular-nums;font-family:"Archivo",sans-serif;color:var(--ink2);white-space:nowrap}
+
+.call{border-left:3px solid var(--alert);background:var(--alert-bg);padding:13px 17px;border-radius:0 8px 8px 0;font-size:13.5px;line-height:1.55}
+.call b{color:var(--alert)}
+.call.ok{border-left-color:var(--class);background:var(--class-bg)} .call.ok b{color:var(--class)}
+.call.info{border-left-color:var(--self2);background:var(--self-bg)} .call.info b{color:var(--self2)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:13px}
+.cd{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:17px;display:flex;flex-direction:column;gap:8px}
+.cd.hl{border-color:var(--work-bd);background:var(--work-bg)}
+.cd.ok{border-color:var(--class-bd);background:var(--class-bg)}
+.cd h4{margin:0;font-size:14.5px;font-weight:600}
+.cd .rg{font-size:11.5px;color:var(--ink3);font-variant-numeric:tabular-nums;font-family:"Archivo",sans-serif}
+.cd dl{margin:0;display:flex;flex-direction:column;gap:4px;font-size:12.5px}
+.cd dl div{display:flex;justify-content:space-between;gap:10px}
+.cd dt{color:var(--ink3);margin:0}.cd dd{margin:0;color:var(--ink2);text-align:right}
+.cd .big{font-family:"Archivo",sans-serif;font-weight:700;font-size:26px;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.cd .lab{font-size:11.5px;color:var(--ink3);font-weight:600}
+.cd .exp{font-size:12.5px;color:var(--ink2);line-height:1.45}
+.cd.ok .big{color:var(--class)}
+.cd .tot{margin-top:auto;padding-top:9px;border-top:1px solid var(--line);font-family:"Archivo",sans-serif;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+
+.pri{display:flex;flex-wrap:wrap;gap:7px;align-items:center;font-size:13.5px}
+.pri i{font-style:normal;padding:5px 13px;border-radius:20px;background:var(--card);border:1px solid var(--line2);font-weight:600}
+.pri i.top{border-color:var(--class-bd);background:var(--class-bg);color:var(--class)}
+.pri i.low{color:var(--ink3)}
+.pri s{color:var(--ink3);text-decoration:none;font-size:15px}
+
+.ask ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:13.5px}
+.ask li em{font-style:normal;color:var(--ink3);font-size:12.5px;display:block;margin-top:1px}
+
+footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink3);font-size:12.5px}
+.sync{font-size:11.5px;color:var(--ink3);display:flex;align-items:center;gap:5px}
+.sync i{width:6px;height:6px;border-radius:50%;background:var(--ink3);display:inline-block}
+.sync.on i{background:var(--class)}
+@media(max-width:760px){
+ html{-webkit-text-size-adjust:100%}
+ *{-webkit-tap-highlight-color:rgba(0,102,79,.12)}
+ .wrap{padding:20px 13px 96px;gap:26px}
+ /* 顶栏压成两行：第一行 标签＋进度，第二行 章节导航横向滑动 */
+ .bar-in{padding:8px 13px;gap:10px;row-gap:7px}
+ .brand{font-size:0;order:3;margin-left:auto}
+ .brand small{font-size:11px;display:block;white-space:nowrap}
+ .tabs{order:1}
+ .prog{order:2;gap:7px}
+ .pbar{width:54px}
+ nav.jump{order:4;width:100%;margin-left:0;flex-wrap:nowrap;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:1px}
+ nav.jump::-webkit-scrollbar{display:none}
+ nav.jump a{padding:4px 9px;font-size:12px;flex:none}
+ section{scroll-margin-top:104px}
+ /* 待办 */
+ .td{grid-template-columns:24px 1fr;gap:11px;padding:12px 14px}
+ .tdt{grid-column:2;order:-1;font-size:11.5px;display:flex;gap:7px;align-items:baseline}
+ .tdt small{display:inline}
+ .ti{font-size:14.5px}
+ .cb{width:22px;height:22px}
+ .filters{gap:5px}.filters button{padding:6px 12px}
+ /* 存钱罐 */
+ .piggy{grid-template-columns:1fr;gap:18px;padding:20px}
+ .jar{max-width:152px;margin:0 auto}
+ .pig-grid{grid-template-columns:1fr 1fr}
+ .pg:last-child{grid-column:1/-1}
+ /* 日历 */
+ .cell{min-height:56px;padding:5px}
+ .cell .amt{font-size:13px}
+ .calnav{flex-wrap:wrap;row-gap:8px}
+ .calnav h3{font-size:16px}
+ .calnav .mi{width:100%;margin-left:0;text-align:left}
+ .quick button{min-width:0}
+ /* 悬浮按钮不挡内容 */
+ .fab{right:14px;bottom:14px;padding:11px 16px}
+}
+@media(max-width:400px){
+ nav.jump a{padding:4px 7px}
+ .cgrid .dh{font-size:10px}
+ .cell{min-height:50px}
+ .cell .dn2{font-size:11px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* view tabs */
+.tabs{display:flex;gap:4px;background:var(--paper);padding:3px;border-radius:9px;border:1px solid var(--line)}
+.tabs button{font-family:inherit;font-size:13px;font-weight:600;padding:6px 15px;border-radius:6px;border:0;
+ background:transparent;color:var(--ink3);cursor:pointer;white-space:nowrap}
+.tabs button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.view{display:none} .view.on{display:flex;flex-direction:column;gap:34px}
+
+/* piggy */
+.piggy{display:grid;grid-template-columns:210px 1fr;gap:30px;align-items:center;
+ background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px 30px;box-shadow:var(--shadow)}
+.jar{position:relative}
+.jar svg{display:block;width:100%;height:auto}
+.jar .cap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+ font-family:"Archivo",sans-serif;font-weight:700;font-size:27px;letter-spacing:-.03em;
+ color:var(--ink);text-shadow:0 1px 6px var(--card);pointer-events:none}
+.pig-n{display:flex;flex-direction:column;gap:14px}
+.pig-big{font-family:"Archivo",sans-serif;font-weight:700;font-size:clamp(30px,5vw,46px);
+ letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1;color:var(--work)}
+.pig-big small{font-size:16px;font-weight:600;color:var(--ink3);margin-left:6px;letter-spacing:0}
+.pig-sub{color:var(--ink2);font-size:13.5px;line-height:1.55;max-width:46ch}
+.pig-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(122px,1fr));gap:1px;
+ background:var(--line);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.pg{background:var(--card);padding:11px 13px}
+.pg dt{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);font-weight:600;margin:0}
+.pg dd{margin:4px 0 0;font-family:"Archivo",sans-serif;font-weight:700;font-size:17px;
+ font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pg dd.up{color:var(--class)} .pg dd.dn{color:var(--alert)}
+
+/* calendar */
+.calnav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.calnav button{font-family:"Archivo",inherit;font-size:14px;width:32px;height:32px;border-radius:8px;
+ border:1px solid var(--line2);background:var(--card);color:var(--ink2);cursor:pointer}
+.calnav button:hover{border-color:var(--accent);color:var(--accent)}
+.calnav button:disabled{opacity:.3;cursor:default}
+.calnav button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.calnav h3{margin:0;font-size:17px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.calnav .mi{margin-left:auto;font-size:12.5px;color:var(--ink2);text-align:right;line-height:1.45}
+.calnav .mi b{font-family:"Archivo",sans-serif;font-variant-numeric:tabular-nums}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);
+ border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cgrid .dh{background:var(--paper);padding:7px 0;text-align:center;font-size:11px;font-weight:600;color:var(--ink3)}
+.cgrid .dh.we{color:var(--work)}
+.cell{background:var(--card);min-height:72px;padding:6px 7px;display:flex;flex-direction:column;gap:3px;
+ border:0;font-family:inherit;text-align:left;cursor:pointer;position:relative}
+.cell:disabled{background:var(--paper);cursor:default;opacity:.45}
+.cell:hover:not(:disabled){background:var(--paper)}
+.cell:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.cell .dn2{font-family:"Archivo",sans-serif;font-size:12px;font-weight:600;color:var(--ink3);font-variant-numeric:tabular-nums}
+.cell.today .dn2{background:var(--ink);color:var(--paper);border-radius:50%;width:20px;height:20px;
+ display:flex;align-items:center;justify-content:center}
+.cell .pl{font-size:10px;color:var(--ink3)}
+.cell .amt{margin-top:auto;font-family:"Archivo",sans-serif;font-weight:700;font-size:14px;
+ font-variant-numeric:tabular-nums;color:var(--work)}
+.cell.planned{background:var(--work-bg)}
+.cell.planned:hover:not(:disabled){background:var(--work-bd)}
+.cell.has .amt{color:var(--class)}
+.cell.has{background:var(--class-bg)}
+.cell .dot{position:absolute;top:7px;right:7px;width:5px;height:5px;border-radius:50%;background:var(--work-bd)}
+.cell.has .dot{background:var(--class)}
+
+/* popover */
+.pop{position:fixed;inset:0;background:rgba(10,16,20,.4);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.pop.on{display:flex}
+.pop-c{background:var(--card);border-radius:14px;padding:24px;width:100%;max-width:330px;box-shadow:0 16px 50px rgba(0,0,0,.25)}
+.pop-c h4{margin:0 0 3px;font-size:16px;font-weight:700}
+.pop-c .pd{font-size:12.5px;color:var(--ink3);margin-bottom:16px}
+.pop-c input{width:100%;font-family:"Archivo",sans-serif;font-size:26px;font-weight:700;padding:11px 13px;
+ border:1.5px solid var(--line2);border-radius:9px;background:var(--paper);color:var(--ink);
+ font-variant-numeric:tabular-nums;text-align:right}
+.pop-c input:focus{outline:0;border-color:var(--accent)}
+.pop-c .unit{font-size:12px;color:var(--ink3);text-align:right;margin-top:5px}
+.quick{display:flex;gap:6px;margin:13px 0 17px;flex-wrap:wrap}
+.quick button{flex:1;min-width:56px;font-family:"Archivo",sans-serif;font-size:13px;font-weight:600;padding:7px 0;
+ border-radius:7px;border:1px solid var(--line2);background:var(--paper);color:var(--ink2);cursor:pointer}
+.quick button:hover{border-color:var(--work);color:var(--work)}
+.pop-a{display:flex;gap:8px}
+.pop-a button{flex:1;font-family:inherit;font-size:13.5px;font-weight:600;padding:10px 0;border-radius:9px;cursor:pointer;border:1px solid var(--line2);background:var(--card);color:var(--ink2)}
+.pop-a button.pri2{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pop-a button.del{color:var(--alert);border-color:var(--alert-bg)}
+
+.wkbar{display:flex;gap:2px;height:34px;align-items:flex-end;margin-top:6px}
+.wkbar i{flex:1;background:var(--line);border-radius:2px 2px 0 0;min-height:2px;position:relative}
+.wkbar i.ok{background:var(--class)} .wkbar i.miss{background:var(--work-bd)}
+@media(max-width:760px){.piggy{grid-template-columns:1fr;gap:20px}.jar{max-width:170px;margin:0 auto}
+ .cell{min-height:58px}.cell .pl{display:none}}
+
+
+/* chat */
+.fab{position:fixed;right:22px;bottom:22px;z-index:80;display:flex;align-items:center;gap:8px;
+ padding:12px 18px;border-radius:30px;border:0;background:var(--class);color:#fff;cursor:pointer;
+ font-family:inherit;font-size:14px;font-weight:600;box-shadow:0 6px 22px rgba(0,102,79,.32)}
+.fab:hover{filter:brightness(1.08)} .fab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.fab svg{width:17px;height:17px}
+.chat{position:fixed;right:22px;bottom:22px;z-index:90;width:min(400px,calc(100vw - 32px));
+ height:min(560px,calc(100vh - 44px));background:var(--card);border:1px solid var(--line2);
+ border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.28);display:none;flex-direction:column;overflow:hidden}
+.chat.on{display:flex}
+.chat-h{padding:14px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+.chat-h b{font-size:14.5px;font-family:"Archivo",sans-serif}
+.chat-h small{color:var(--ink3);font-size:11.5px}
+.chat-h button{margin-left:auto;border:0;background:transparent;color:var(--ink3);cursor:pointer;
+ font-size:19px;line-height:1;padding:3px 7px;border-radius:6px;font-family:inherit}
+.chat-h button:hover{background:var(--paper);color:var(--ink)}
+.chat-b{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:88%;font-size:13.5px;line-height:1.55;padding:10px 13px;border-radius:13px;white-space:pre-wrap;word-break:break-word}
+.msg.u{align-self:flex-end;background:var(--class);color:#fff;border-bottom-right-radius:4px}
+.msg.a{align-self:flex-start;background:var(--paper);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.sys{align-self:center;font-size:12px;color:var(--ink3);background:transparent;padding:2px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px}
+.chips button{font-size:12px;padding:5px 11px;border-radius:20px;border:1px solid var(--line2);
+ background:var(--card);color:var(--ink2);cursor:pointer;font-family:inherit}
+.chips button:hover{border-color:var(--class);color:var(--class)}
+.chat-f{border-top:1px solid var(--line);padding:11px 13px;display:flex;gap:8px;align-items:flex-end}
+.chat-f textarea{flex:1;resize:none;border:1px solid var(--line2);border-radius:10px;padding:9px 11px;
+ font-family:inherit;font-size:13.5px;background:var(--paper);color:var(--ink);max-height:110px;line-height:1.45}
+.chat-f textarea:focus{outline:0;border-color:var(--class)}
+.chat-f button{border:0;background:var(--class);color:#fff;width:38px;height:38px;border-radius:10px;
+ cursor:pointer;flex:none;font-size:16px;font-family:inherit}
+.chat-f button:disabled{opacity:.4;cursor:default}
+@media(max-width:640px){.chat{right:8px;bottom:8px;width:calc(100vw - 16px);height:calc(100vh - 16px);border-radius:12px}}
+
+
+.modes{display:flex;gap:3px;background:var(--paper);padding:2px;border-radius:8px;border:1px solid var(--line)}
+.modes button{font-family:inherit;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;
+ border:0;background:transparent;color:var(--ink3);cursor:pointer;white-space:nowrap}
+.modes button.on{background:var(--card);color:var(--class);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.modes button:disabled{opacity:.35;cursor:not-allowed}
+.chat-h{flex-wrap:wrap;gap:8px}
+.chat-h .ln{width:100%;display:flex;align-items:center;gap:8px;order:2}
+
+</style>
+</head>
+<body>
+<div class="bar"><div class="bar-in">
+ <div class="brand">出发前的六个月<small id="cd">距 2/18 出发</small></div>
+ <div class="tabs"><button data-v="plan" class="on">计划</button><button data-v="work">打工日历</button></div>
+ <div class="prog"><span class="pbar"><i id="pb"></i></span><span id="pt">0 / 39</span></div>
+ <nav class="jump" id="nav">
+  <a href="#now">现在要做</a><a href="#all">全部待办</a><a href="#dead">死线</a>
+  <a href="#facts">查证结果</a><a href="#ask">问学科</a><a href="#cash">存款</a>
+  <a href="#money">费用</a><a href="#pri">优先级</a><a href="#prof">教授</a>
+ </nav></div></div>
+
+<div class="wrap">
+<div class="view on" id="v-plan">
+<header>
+ <p class="eyebrow">2026.9 – 2027.2</p>
+ <h1>出发前的六个月</h1>
+ <p class="sub">语言班已于 9 月 14 日报名，正等录取与 I-20。目标四件：线代与微积分成绩、南加大与签证申请无误、驾照、存款 2000 万。勾选会自动保存，下次打开还在。</p>
+</header>
+
+<section id="now"><div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>现在要做</h2><span class="cnt" id="nowc"></span></div>
+ <div class="sec-body"><p class="lede">未来三周内到期、且还没勾掉的事。做完一件勾一件，这里会自动少一条。</p>
+ <div class="todos" id="nowlist"></div></div></section>
+
+<section id="stats"><div class="sec-body">
+ <dl class="stats">
+  <div class="st"><dt>距离出发</dt><dd id="days">—<span class="u">天</span></dd><small>2027-02-18</small></div>
+  <div class="st"><dt>存款目标</dt><dd>2,000<span class="u">万</span></dd><small>落点 2,315 万 · 超出 315 万</small></div>
+  <div class="st"><dt>死线</dt><dd>2<span class="u">个</span></dd><small>面签预约 · 毕业意向申请</small></div>
+  <div class="st"><dt>待办完成</dt><dd id="pct">0<span class="u">%</span></dd><small id="synct">正在连接存档…</small></div>
+ </dl></div></section>
+
+<section id="all">
+ <div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>全部待办</h2></div>
+ <div class="sec-body"><p class="lede">按时间排序。点分类可以只看一类，点「未完成」隐藏做过的。</p><div class="filters" id="filters"></div><div class="todos" id="alllist"></div></div></section>
+
+<section id="dead">
+ <div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>两个死线</h2></div>
+ <div class="sec-body"><p class="lede">其余所有事都可以往后挪一点，这两件不行。</p><div class="cards">
+<div class="cd" style="border-color:var(--alert);background:var(--alert-bg)">
+<h4 style="color:var(--alert)">I-20 到手后立刻预约面签</h4>
+<div class="exp">收到 I-20 当天交 SEVIS $350，马上抢首尔面签位子。</div>
+<div class="exp" style="color:var(--alert);font-weight:600">位子先到先得。晚一周预约可能晚一个月才轮到，护照回不来就走不了。</div></div>
+<div class="cd" style="border-color:var(--alert);background:var(--alert-bg)">
+<h4 style="color:var(--alert)">11 月下旬 · 毕业意向申请</h4>
+<div class="exp">保的不是出发，是未毕业身份对 F-1 面签的说服力，以及回韩国求职的应届生资格。</div>
+<div class="exp" style="color:var(--alert);font-weight:600">必须排在 11/20 选课之后。今年官方日期要去学科确认。</div></div>
+</div>
+<div class="call ok" style="margin-top:16px"><b>I-20 的资金证明已于 9/14 随申请交齐。✅</b>
+USC 要求的 $16,194（2,235 만）是银行余额证明，不是收费，F-1 也允许由担保人出具。
+现在签发 I-20 只剩录取与 $1,000 押金 —— 收到录取当天就缴，早一天全线早一天。</div></div></section>
+<section id="facts">
+ <div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>查证后推翻的三件事</h2></div>
+ <div class="sec-body"><p class="lede">我和 GPT 各自联网查、交叉核对。每一条都和你 PDF 上写的不一样。</p><div class="cards">
+<div class="cd"><h4>加州驾照</h4><div class="rg">PDF 说免路考</div>
+<div class="exp" style="color:var(--alert);font-weight:600">不免。加州不在韩国互认的 23 州内，笔试路考都要重考。</div>
+<div class="rg" style="margin-top:auto">韩国外交部互认名单 · 加州 DMV</div></div>
+<div class="cd"><h4>ADsP</h4><div class="rg">PDF 说 11 月考</div>
+<div class="exp" style="color:var(--alert);font-weight:600">第 51 回是 10/31 考，9/28–10/2 报名。2027 Q1 日程未公布。</div>
+<div class="rg" style="margin-top:auto">한국데이터산업진흥원</div></div>
+<div class="cd"><h4>毕业意向申请</h4><div class="rg">PDF 说 11 月中旬</div>
+<div class="exp" style="color:var(--alert);font-weight:600">去年是 11/14 开、11/28 截止，两周窗口不是一天。</div>
+<div class="rg" style="margin-top:auto">梨大公告 · 今年日期待确认</div></div>
+</div>
+<div class="call" style="margin-top:16px"><b>梨大校规与你的微积分直接冲突。</b>
+原文：「학사학위취득유예 이후 교과목 수강 및 등록이나 휴학할 수 없음」。
+而你的选课日 11/20 正好夹在申请窗口中间。<br><br>
+<b>在问到答案前，默认按「先选课缴费，后申请延期」执行</b> —— 这个顺序在两种生效规则下都安全。</div></div></section>
+<section id="ask">
+ <div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>明天去学科办公室问三件事</h2></div>
+ <div class="sec-body"><p class="lede">全部围绕同一个风险：11 月那一周的顺序。</p><div class="cd" style="padding:19px 21px"><ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:9px;font-size:13.5px">
+<li><b>11 月申请졸업유예之后，还能选 12/28 开始的寒假微积分吗？</b><em style="font-style:normal;color:var(--ink3);font-size:12.5px;display:block;margin-top:2px">校规写明유예后不能修课，而选课日 11/20 夹在申请窗口中间</em></li>
+<li><b>유예 的生效时点是「申请当天」还是「2 月毕业日」？</b><em style="font-style:normal;color:var(--ink3);font-size:12.5px;display:block;margin-top:2px">这条决定上面那个问题的答案</em></li>
+<li><b>2026 学年度前期的졸업의사 신청窗口具体是几号到几号？</b><em style="font-style:normal;color:var(--ink3);font-size:12.5px;display:block;margin-top:2px">去年 11/14–11/28，我现在按 11/13–11/27 排</em></li>
+</ol></div></div></section>
+<section id="cash">
+ <div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>存款怎么走到 2,000 万</h2></div>
+ <div class="sec-body"><p class="lede">净存 = 当月收入 − 当月在韩生活费 330 万。日均按你真实的 43.7 万。</p><div class="tw2"><table class="t"><thead><tr><th>月份</th><th>打工强度</th><th class="r">净存</th><th class="r">累计</th></tr></thead><tbody>
+<tr><td>9 月</td><td class="src2">10 个工作日</td><td class="r">+313 만</td><td class="r">313 만</td></tr><tr><td>10 月</td><td class="src2">15 天，第 8 周考试周只上周六</td><td class="r">+389 만</td><td class="r">702 만</td></tr><tr><td>11 月</td><td class="src2">17 天，全月最密</td><td class="r">+508 만</td><td class="r">1,210 만</td></tr><tr><td>12 月</td><td class="src2">16 天，期末周只周六，12/14 后一至六</td><td class="r">+423 만</td><td class="r">1,633 만</td></tr><tr><td>1 月</td><td class="src2">15 天，微积分期只周六，1/16 后一至六</td><td class="r">+389 만</td><td class="r">2,022 만</td></tr><tr><td>2 月</td><td class="src2">10 天，2/11 起只周六</td><td class="r">+293 만</td><td class="r">2,315 만</td></tr>
+</tbody></table></div>
+<div class="call ok" style="margin-top:16px"><b>1 月 29 日越过 2,000 万，出发前还能再存 20 天。</b>
+净存 = 当月收入 − 当月在韩生活费 330 万。最终落点 2,315 만，比目标多 315 만，约 6 天容错。共 83 个工作日，周日全部空出。<br><br>
+<b>周日公休改变了整个排法。</b>原来靠周一·周五·周六·周日四天，现在周日没了。只上周一五六这三天，落点只有 1,562 만，差 438 만。<br><br><b>解法是周二补上，假期加周六。</b>周二毕业作品 14:00 下课后开工，和周五同一个模式，21:43 到家。假期从一至五加到一至六。这样 83 天、落点 2,315 만。</div>
+<div class="tw2" style="margin-top:16px"><table class="t"><thead><tr><th>学期中天数</th><th class="r">周耗时</th><th class="r">落点</th><th class="r">对 2,000 만</th><th class="r">每周空出</th></tr></thead><tbody>
+<tr><td>3 天</td><td class="r">28.2h</td><td class="r">1,937 만</td><td class="r" style="color:var(--alert)">−63 만</td><td class="r">+8.4h</td></tr>
+<tr><td>3.5 天</td><td class="r">32.4h</td><td class="r">2,177 만</td><td class="r">+177 만</td><td class="r">+4.2h</td></tr>
+<tr class="sum"><td>学期中 4 天（一二五六）</td><td class="r">36.6h</td><td class="r">2,315 만</td><td class="r">+315 만</td><td class="r">+0h</td></tr>
+</tbody></table></div>
+<div class="call info" style="margin-top:16px"><b>先按 4 天走到 11 月底再决定。</b>
+那时累积约 1,264 만，手上有三个月真实数据。早期多存的钱比后期值钱，因为它把风险提前消掉。</div></div></section>
+<section id="money" class=closed>
+ <div class="sec-h" role="button" tabindex="0" aria-expanded="false"><span class="tw">▼</span><h2>南加大要花多少钱（家里负担）</h2></div>
+ <div class="sec-body"><p class="lede">按实际支付先后排列，分十二笔摊在五个月里，不必一次备齐。</p><div class="call info" style="margin-bottom:16px"><b>学费是 $6,500，不是 $8,300。</b>
+$8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗保险 $1,050。
+如果你在别处看到 $7,450，那是 2026 年的价（服务费 $950 且含保险）。你 2/25 开课，适用 2027 年价。</div>
+<div class="tw2"><table class="t"><thead><tr><th>预计支付</th><th>项目</th><th class="r">美元</th><th class="r">韩币</th><th>说明</th></tr></thead><tbody>
+<tr><td class="dtc">已缴 9/14</td><td>申请费</td><td class="r">$195</td><td class="r">27 만</td><td class="src2">不退</td></tr>
+<tr><td class="dtc">录取后当天</td><td><b>入学押金</b></td><td class="r">$1,000</td><td class="r">138 만</td><td class="src2">现在唯一卡着 I-20 的一步，抵扣学费</td></tr>
+<tr><td class="dtc">约 10/15</td><td>SEVIS I-901</td><td class="r">$350</td><td class="r">48 만</td><td class="src2">面签前至少 3 个工作日</td></tr>
+<tr><td class="dtc">约 10/20</td><td>F-1 签证费 MRV</td><td class="r">$185</td><td class="r">26 만</td><td class="src2">预约面签时缴</td></tr>
+<tr><td class="dtc">10 月</td><td>韩国驾照学院</td><td class="r">—</td><td class="r">95 만</td><td class="src2">80–110 만，待问实价</td></tr>
+<tr><td class="dtc">11 月下旬–12 月</td><td>单程机票 ICN→LAX</td><td class="r">$800</td><td class="r">110 만</td><td class="src2">F-1 下来后再订</td></tr>
+<tr><td class="dtc">1 月</td><td>洛杉矶短租押金</td><td class="r">$1,000</td><td class="r">138 만</td><td class="src2">韩国城独立房间 $500–1,600</td></tr>
+<tr><td class="dtc">开课前</td><td><b>学费 Program Fee</b></td><td class="r">$6,500</td><td class="r">897 만</td><td class="src2">扣掉押金后实缴 $5,500</td></tr>
+<tr><td class="dtc">开课前</td><td>学校服务费</td><td class="r">$750</td><td class="r">104 만</td><td class="src2">含教材与校内设施</td></tr>
+<tr><td class="dtc">开课前</td><td>强制医疗保险</td><td class="r">$1,050</td><td class="r">145 만</td><td class="src2">语言班不可 waive</td></tr>
+<tr><td class="dtc">2 月落地后</td><td>安置杂费</td><td class="r">$500</td><td class="r">69 만</td><td class="src2">机场交通、日用品、汇款</td></tr>
+<tr><td class="dtc">2 月落地后</td><td>加州驾照</td><td class="r">$400</td><td class="r">55 만</td><td class="src2">官费 $46 ＋ 用车约 $350</td></tr>
+<tr class="sum"><td>一次性合计</td><td></td><td class="r">$11,730</td><td class="r">1,714 만</td><td></td></tr>
+<tr><td class="dtc">2/25–6/17 逐月</td><td>在美生活费</td><td class="r">$2,000/月</td><td class="r">1,110 만</td><td class="src2">韩国城独立房间，3.7 个月</td></tr>
+<tr class="sum"><td>总计</td><td></td><td></td><td class="r">2,824 만</td><td></td></tr>
+</tbody></table></div></div></section>
+<section id="pri" class=closed>
+ <div class="sec-h" role="button" tabindex="0" aria-expanded="false"><span class="tw">▼</span><h2>优先级与已定的事</h2></div>
+ <div class="sec-body"><p class="lede">撞车时照这个砍，不要临场决定。</p><div class="pri"><i class="top">线代与微积分成绩</i><s>&gt;</s><i class="top">南加大与签证申请无误</i><s>&gt;</s><i>驾照</i><s>&gt;</s><i>存款</i><s>&gt;</s><i class="low">ADsP</i><s>&gt;</s><i class="low">实习申请</i></div>
+<div class="call" style="margin-top:16px"><b>永远不要砍课和 GPA。</b>钱可以后补，GPA 掉了整份学校名单就废了。排不开时先砍 ADsP，再砍打工天数。</div>
+<div class="cards" style="margin-top:16px">
+<div class="cd"><h4>实习与研究室</h4><div class="rg">每月 1–2 份</div><div class="exp">目的是拿反馈不是拿 offer。考试周可提前或顺延，但不得错过岗位本身的截止日。</div></div>
+<div class="cd"><h4>存款若不足</h4><div class="rg">照常出发</div><div class="exp">降低在美生活标准。不推迟、不借钱、不在期末加班。2/18 锁死。</div></div>
+<div class="cd ok"><h4>ADsP 与驾照</h4><div class="rg">两个都要</div><div class="exp">共约 72 小时，学期空闲 734 小时。ADsP 可拆碎片，驾照是预约制需连续时段。</div></div>
+<div class="cd hl"><h4>1 月三周</h4><div class="rg">微积分优先</div><div class="exp">打工 4.5 天降到 2 天，少 7 天约 420 万。微积分计入主 GPA，这个让步成立。</div></div>
+</div></div></section>
+<section id="prof" class=closed>
+ <div class="sec-h" role="button" tabindex="0" aria-expanded="false"><span class="tw">▼</span><h2>联系教授的三个时点</h2></div>
+ <div class="sec-body"><p class="lede">推荐信要在人还在学校、老师还记得你的时候要。</p><div class="cards">
+<div class="cd"><h4>10 月中</h4><div class="rg">期中考之后</div><div class="exp">首次接触 CS 与传媒各一位教授，只表达读研意向，不谈推荐信。</div></div>
+<div class="cd"><h4>12 月初</h4><div class="rg">期末考之前</div><div class="exp">正式请求推荐信承诺，附简历、成绩单、读研方向说明。老师刚看完你一学期表现。</div></div>
+<div class="cd hl"><h4>2 月上旬</h4><div class="rg">出发前</div><div class="exp">当面告别，确认对方愿意未来提交，留常用邮箱。人在国外再找老师回复率低很多。</div></div>
+</div>
+<div class="call info" style="margin-top:16px"><b>优先김수민（毕业作品设计）。</b>
+他完整看到你一学期的项目产出，是三门课里唯一能写出具体内容的推荐人。황지현（线性代数）只能证明数学成绩，分量不同。</div></div></section>
+
+<footer>据 2026-09-14 已知信息整理，合并了你的月度计划 PDF、梨大 cyber campus 课程日程、南加大官网费用与签证流程时长。
+<span class="sync" id="sync" style="margin-top:8px"><i></i><span>存档状态未知</span></span></footer>
+</div>
+<div class="view" id="v-work">
+<header>
+ <p class="eyebrow">打工日历</p>
+ <h1>存钱罐</h1>
+ <p class="sub">点日历上的任何一天，填进当天实际赚的钱。罐子会跟着涨，所有数字实时重算。浅色格子是计划要上班的日子。</p>
+</header>
+
+<section id="jar"><div class="sec-body">
+ <div class="piggy">
+  <div class="jar"><svg viewBox="0 0 160 200" aria-label="存钱罐">
+ <defs><clipPath id="jc"><path d="M28 62 Q28 50 40 50 L120 50 Q132 50 132 62 L132 172 Q132 186 118 186 L42 186 Q28 186 28 172 Z"/></clipPath>
+ <linearGradient id="jg" x1="0" y1="1" x2="0" y2="0">
+  <stop offset="0" stop-color="var(--work)" stop-opacity=".95"/><stop offset="1" stop-color="var(--work)" stop-opacity=".62"/></linearGradient></defs>
+ <rect x="52" y="26" width="56" height="8" rx="4" fill="var(--ink3)" opacity=".5"/>
+ <path d="M40 34 L120 34 L128 50 L32 50 Z" fill="var(--line2)" opacity=".55"/>
+ <g clip-path="url(#jc)">
+  <rect id="fill" x="26" y="186" width="108" height="0" fill="url(#jg)"/>
+  <path id="wave" d="" fill="var(--work)" opacity=".35"/>
+ </g>
+ <path d="M28 62 Q28 50 40 50 L120 50 Q132 50 132 62 L132 172 Q132 186 118 186 L42 186 Q28 186 28 172 Z"
+  fill="none" stroke="var(--line2)" stroke-width="2.5"/>
+ <line id="tgt" x1="28" y1="50" x2="132" y2="50" stroke="var(--class)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/>
+</svg><div class="cap" id="jarpct">0%</div></div>
+  <div class="pig-n">
+   <div><span class="pig-big" id="pigAmt">0<small>만 / 2,000 만</small></span></div>
+   <p class="pig-sub" id="pigMsg">还没录入任何一天。点下面日历里的日子开始记。</p>
+   <dl class="pig-grid">
+    <div class="pg"><dt>已录入</dt><dd id="kDays">0 天</dd></div>
+    <div class="pg"><dt>累计收入</dt><dd id="kInc">0 만</dd></div>
+    <div class="pg"><dt>已扣生活费</dt><dd id="kLive">0 만</dd></div>
+    <div class="pg"><dt>对比计划</dt><dd id="kDiff">—</dd></div>
+    <div class="pg"><dt>预计达成</dt><dd id="kEta">—</dd></div>
+   </dl>
+  </div>
+ </div>
+</div></section>
+
+<section id="cal"><div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>日历</h2><span class="cnt" id="calc"></span></div>
+ <div class="sec-body">
+  <div class="calnav">
+   <button id="prev" aria-label="上个月">‹</button>
+   <button id="next" aria-label="下个月">›</button>
+   <h3 id="mlabel"></h3>
+   <div class="mi" id="minfo"></div>
+  </div>
+  <div class="cgrid" id="cgrid"></div>
+  <div class="call info" style="margin-top:16px"><b>浅色格是计划上班日，带 ★ 的是高档日（保底 53.7 만）。周日全部空着，办公室公休。</b>
+  其余计划日保底 43.7 万。填了钱的格子会变绿。<br><br>
+  9/1–9/13 已上 7 天赚 305.8 만，那笔钱已花在生活费上，不计入存款，所以日历从 9/14 开始算。</div>
+ </div></section>
+
+<section id="wk"><div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>逐月进度</h2></div>
+ <div class="sec-body"><p class="lede">计划按实际日历天数排出，共 83 个工作日，周日不排班。实际一栏随你录入更新。</p>
+ <div class="tw2"><table class="t"><thead><tr><th>月份</th><th class="r">计划天数</th><th class="r">计划收入</th><th class="r">实际天数</th><th class="r">实际收入</th><th class="r">差额</th></tr></thead>
+ <tbody id="mtb"></tbody></table></div>
+ <div class="call ok" style="margin-top:16px"><b>计划落点 2,315 만，1 月 29 日越过 2,000 만。</b>
+ 这是按 83 个实际工作日算的，比之前用周平均估的更准。超出目标 315 만，约 6 天班的容错。周日不排班。</div>
+ </div></section>
+</div>
+
+<div class="pop" id="pop"><div class="pop-c">
+ <h4 id="popT">录入收入</h4><div class="pd" id="popD"></div>
+ <input id="popI" type="number" inputmode="decimal" step="0.1" min="0" placeholder="0">
+ <div class="unit">单位：만원</div>
+ <div class="quick">
+  <button data-v="43.7">43.7</button><button data-v="53.7">53.7</button>
+  <button data-v="60">60</button><button data-v="0">休息</button>
+ </div>
+ <div class="pop-a">
+  <button id="popDel" class="del">清除</button>
+  <button id="popX">取消</button>
+  <button id="popOK" class="pri2">保存</button>
+ </div>
+</div></div>
+</div>
+
+
+<button class="fab" id="fab"><svg viewBox="0 0 20 20" fill="none"><path d="M4 4h12v9H8l-4 3V4z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>问 Claude</button>
+<div class="chat" id="chat">
+ <div class="chat-h"><b>问 Claude</b><button id="chatX" aria-label="关闭">×</button><span class="ln"><small id="chatSt">正在连接…</small></span></div>
+ <div class="chat-b" id="chatB">
+  <div class="msg a">我知道这份计划的全部内容，也能看到你勾了哪些事、录了几天班。想让 GPT 也参与的话，页面里做不到，用终端跑 ./gpt.sh 就行。</div>
+ </div>
+ <div class="chips">
+  <button>我现在落后计划多少</button><button>这周该做什么</button><button>少上一天会怎样</button>
+ </div>
+ <div class="chat-f"><textarea id="chatI" rows="1" placeholder="问点什么…"></textarea><button id="chatS" aria-label="发送">↑</button></div>
+</div>
+
+<script>
+const TODOS=[{"id": "office", "iso": "2026-09-15", "when": "9/15", "g": "学校", "gc": "dead", "t": "去学科办公室问三件事", "n": "졸업유예与寒假微积分的先后关系。默认先选课缴费后申请延期", "u": 1}, {"id": "drive-q", "iso": "2026-09-16", "when": "9/16", "g": "资格", "gc": "cert", "t": "问驾照学院报价与排课方式", "n": "预算暂按 95 만。重点是能不能约到你空闲的时段", "u": 0}, {"id": "hw1", "iso": "2026-09-18", "when": "9/18", "g": "学业", "gc": "class", "t": "广告 第1次周作业", "n": "周五 17:00 截止。周四上午做完并交", "u": 0}, {"id": "hw2", "iso": "2026-09-25", "when": "9/25", "g": "学业", "gc": "class", "t": "广告 第2次周作业", "n": "周五 17:00", "u": 0}, {"id": "adsp-reg", "iso": "2026-09-28", "when": "9/28–10/2", "g": "资格", "gc": "cert", "t": "在 dataq.or.kr 报名 ADsP 第51回", "n": "窗口只有 5 天。2027 Q1 日程未公布，这很可能是出发前唯一机会", "u": 1}, {"id": "deposit", "iso": "2026-09-30", "when": "录取后当天", "g": "签证", "gc": "visa", "t": "缴 $1,000 入学押金", "n": "<b>现在唯一卡着 I-20 的一步</b>。资金证明已交齐，押金到账学校才开始签发", "u": 1}, {"id": "hw3", "iso": "2026-10-02", "when": "10/2", "g": "学业", "gc": "class", "t": "广告 第3次周作业", "n": "周五 17:00", "u": 0}, {"id": "adsp-s1", "iso": "2026-10-05", "when": "10/5–10/18", "g": "资格", "gc": "cert", "t": "ADsP 教材通读＋真题一轮", "n": "每周 6 小时，放在周二周四上午", "u": 0}, {"id": "hw4", "iso": "2026-10-09", "when": "10/9", "g": "学业", "gc": "class", "t": "广告 第4次周作业", "n": "周五 17:00", "u": 0}, {"id": "i20", "iso": "2026-10-14", "when": "约 10/14", "g": "签证", "gc": "visa", "t": "收到 I-20 电子版", "n": "押金后 7–10 工作日。电子版打印签字即可用，不必等纸质", "u": 0}, {"id": "sevis", "iso": "2026-10-15", "when": "约 10/15", "g": "签证", "gc": "visa", "t": "交 SEVIS I-901 费 $350", "n": "面签前至少 3 个工作日，建议提前 1–2 周", "u": 1}, {"id": "drive-in", "iso": "2026-10-16", "when": "10 月", "g": "资格", "gc": "cert", "t": "报名驾照学院 2종 보통", "n": "约 13 学时。预约制，要连续时段", "u": 0}, {"id": "prof1", "iso": "2026-10-16", "when": "10 月中", "g": "教授", "gc": "self2", "t": "首次接触 CS 与传媒各一位教授", "n": "只表达读研意向，不谈推荐信", "u": 0}, {"id": "ds160", "iso": "2026-10-20", "when": "约 10/20", "g": "签证", "gc": "visa", "t": "DS-160 提交＋缴签证费 $185＋预约面签", "n": "SEVIS 后 3 工作日。首尔 F/M/J 等待不足 15 天", "u": 1}, {"id": "mid", "iso": "2026-10-21", "when": "10/21", "g": "学业", "gc": "class", "t": "广告的理解 中间考", "n": "周三 18:30。这周打工降到 2 天", "u": 1}, {"id": "adsp-s2", "iso": "2026-10-26", "when": "10/26–10/30", "g": "资格", "gc": "cert", "t": "ADsP 冲刺，每天 3 小时刷真题", "n": "期中考结束后立刻开始", "u": 0}, {"id": "adsp-ex", "iso": "2026-10-31", "when": "10/31", "g": "资格", "gc": "cert", "t": "ADsP 考试", "n": "周六 10:00–11:30。这天不排班", "u": 1}, {"id": "iv", "iso": "2026-11-04", "when": "约 11/4", "g": "签证", "gc": "visa", "t": "F-1 面签", "n": "口头通过不等于已签发，护照到手才算完成", "u": 1}, {"id": "hw5", "iso": "2026-11-06", "when": "11/6", "g": "学业", "gc": "class", "t": "广告 第5次周作业", "n": "周五 17:00", "u": 0}, {"id": "hw6", "iso": "2026-11-13", "when": "11/13", "g": "学业", "gc": "class", "t": "广告 第6次周作业", "n": "周五 17:00", "u": 0}, {"id": "pres", "iso": "2026-11-16", "when": "11/16–11/22", "g": "学业", "gc": "class", "t": "我的发表（第 12 周）", "n": "全学期只做一次。提前一周准备，3 小时", "u": 1}, {"id": "passport", "iso": "2026-11-18", "when": "约 11/18", "g": "签证", "gc": "visa", "t": "贴签护照寄回到手", "n": "面签后 5–10 工作日。比最晚线早 85 天，缓冲留给 221(g)", "u": 0}, {"id": "adsp-r", "iso": "2026-11-20", "when": "11/20", "g": "资格", "gc": "cert", "t": "ADsP 成绩发表", "n": "上午 10:00", "u": 0}, {"id": "calc-reg", "iso": "2026-11-20", "when": "11/20", "g": "学校", "gc": "dead", "t": "寒假微积分 선수강신청", "n": "<b>必须排在延期申请之前</b>。同一天还有第 7 次周作业截止", "u": 1}, {"id": "hw7", "iso": "2026-11-20", "when": "11/20", "g": "学业", "gc": "class", "t": "广告 第7次周作业", "n": "周五 17:00。和选课同一天", "u": 0}, {"id": "defer", "iso": "2026-11-21", "when": "11/21–11/27", "g": "学校", "gc": "dead", "t": "申请졸업의사（延期）", "n": "选完课之后再做。保住应届生身份与 F-1 说服力", "u": 1}, {"id": "hw8", "iso": "2026-11-27", "when": "11/27", "g": "学业", "gc": "class", "t": "广告 第8次周作业", "n": "周五 17:00。最后一次", "u": 0}, {"id": "prof2", "iso": "2026-12-01", "when": "12 月初", "g": "教授", "gc": "self2", "t": "正式请求推荐信承诺", "n": "附简历、成绩单、读研方向说明。避开期末周", "u": 1}, {"id": "calc-pay", "iso": "2026-12-04", "when": "12 月初", "g": "学校", "gc": "dead", "t": "微积分缴费截止", "n": "缴完才算选课成功", "u": 1}, {"id": "final", "iso": "2026-12-09", "when": "12/9", "g": "学业", "gc": "class", "t": "广告的理解 期末考", "n": "周三 18:30。这周打工降到 2 天", "u": 1}, {"id": "sem-end", "iso": "2026-12-13", "when": "12/13", "g": "学业", "gc": "class", "t": "学期结束", "n": "线代与毕业作品期末也在这周", "u": 0}, {"id": "flight", "iso": "2026-12-15", "when": "F-1 下来后", "g": "行前", "gc": "life", "t": "订单程机票 ICN→LAX", "n": "约 $800。购票很快，不占计划时间", "u": 0}, {"id": "calc", "iso": "2026-12-28", "when": "12/28–1/15", "g": "学业", "gc": "class", "t": "上寒假微积分", "n": "每天 12:30–15:30 周一至周五。打工降到 2 天", "u": 1}, {"id": "sublet", "iso": "2027-01-15", "when": "1 月", "g": "行前", "gc": "life", "t": "找洛杉矶韩国城短租，付押金", "n": "约 $1,000。1/15 微积分结束后再集中处理", "u": 0}, {"id": "goal", "iso": "2027-01-25", "when": "1/25", "g": "钱", "gc": "work", "t": "越过 2,000 万存款目标", "n": "之后还有 24 天在继续存", "u": 0}, {"id": "tuition", "iso": "2027-02-01", "when": "开课前", "g": "签证", "gc": "visa", "t": "缴学费余款", "n": "学费 $6,500 扣掉押金实缴 $5,500，另加服务费 $750 与保险 $1,050", "u": 1}, {"id": "prof3", "iso": "2027-02-05", "when": "2 月上旬", "g": "教授", "gc": "self2", "t": "当面向教授告别，确认后续联系方式", "n": "人在国外再找老师，回复率会低很多", "u": 1}, {"id": "pack", "iso": "2027-02-11", "when": "2/11 起", "g": "行前", "gc": "life", "t": "打包、退租、行政手续", "n": "打工降到 2 天/周", "u": 0}, {"id": "depart", "iso": "2027-02-18", "when": "2/18", "g": "行前", "gc": "life", "t": "飞洛杉矶", "n": "到 2/25 开课只有 7 天", "u": 1}];
+const TODAY=new Date("2026-09-14T00:00:00");
+const DEP=new Date("2027-02-18T00:00:00");
+let state={}, saveFn=null, filter="undone", group="";
+
+document.getElementById("days").innerHTML=Math.round((DEP-TODAY)/864e5)+'<span class="u">天</span>';
+
+function esc(s){return s;}
+function row(t){
+  const done=!!state[t.id];
+  return `<div class="td ${done?'done':''} ${t.u&&!done?'urg':''}" data-id="${t.id}" data-g="${t.g}">
+   <button class="cb" aria-label="${done?'取消勾选':'标记完成'} ${t.t}" aria-pressed="${done}">
+    <svg viewBox="0 0 12 12" fill="none"><path d="M2 6.2 4.6 8.8 10 3.4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+   <span class="tdt">${t.when}<small>${t.g}</small></span>
+   <span><span class="ti">${t.t}</span><span class="tn">${t.n}</span></span></div>`;
+}
+function render(){
+  const soon=new Date(TODAY.getTime()+21*864e5);
+  const now=TODOS.filter(t=>!state[t.id] && new Date(t.iso+"T00:00:00")<=soon);
+  document.getElementById("nowlist").innerHTML = now.length?now.map(row).join(""):
+    '<div class="empty">三周内的事都做完了。往下看「全部待办」。</div>';
+  document.getElementById("nowc").textContent = now.length?now.length+" 项":"已清空";
+
+  let list=TODOS.slice();
+  if(filter==="undone") list=list.filter(t=>!state[t.id]);
+  if(group) list=list.filter(t=>t.g===group);
+  document.getElementById("alllist").innerHTML=list.length?list.map(row).join(""):
+    '<div class="empty">这个筛选下没有条目。</div>';
+
+  const d=TODOS.filter(t=>state[t.id]).length, pc=Math.round(d/TODOS.length*100);
+  document.getElementById("pb").style.width=pc+"%";
+  document.getElementById("pt").textContent=d+" / "+TODOS.length;
+  document.getElementById("pct").innerHTML=pc+'<span class="u">%</span>';
+}
+const GS=["学业","签证","资格","学校","教授","行前","钱"];
+document.getElementById("filters").innerHTML=
+ `<button data-f="undone" class="on">未完成</button><button data-f="all">全部</button>`+
+ GS.map(g=>`<button data-g="${g}">${g}</button>`).join("")+
+ `<span class="sp">共 ${TODOS.length} 项</span>`;
+
+document.addEventListener("click",e=>{
+  const cb=e.target.closest(".cb");
+  if(cb){ const id=cb.closest(".td").dataset.id; state[id]=!state[id]; render(); if(saveFn) saveFn(); return; }
+  const fb=e.target.closest("#filters button");
+  if(fb){
+    if(fb.dataset.f){ filter=fb.dataset.f; group=""; }
+    else { group = group===fb.dataset.g ? "" : fb.dataset.g; }
+    document.querySelectorAll("#filters button").forEach(b=>{
+      b.classList.toggle("on", (b.dataset.f&&b.dataset.f===filter&&!group) || (b.dataset.g&&b.dataset.g===group));
+    });
+    render(); return;
+  }
+  const sh=e.target.closest(".sec-h");
+  if(sh){ const s=sh.closest("section"); const c=s.classList.toggle("closed");
+    sh.setAttribute("aria-expanded", c?"false":"true"); }
+});
+document.addEventListener("keydown",e=>{
+  if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("sec-h")){e.preventDefault();e.target.click();}
+});
+
+// scroll-spy
+const secs=[...document.querySelectorAll("section[id]")];
+const links=[...document.querySelectorAll("#nav a")];
+const spy=new IntersectionObserver(es=>{
+  es.forEach(en=>{ if(en.isIntersecting){
+    links.forEach(a=>a.classList.toggle("on", a.getAttribute("href")==="#"+en.target.id)); } });
+},{rootMargin:"-60px 0px -70% 0px"});
+secs.forEach(s=>spy.observe(s));
+
+// 存档：优先 db，退回 localStorage
+function setSync(on,txt){
+  const el=document.getElementById("sync"); el.classList.toggle("on",on);
+  el.lastElementChild.textContent=txt; document.getElementById("synct").textContent=txt;
+}
+try{ const raw=localStorage.getItem("plan-check"); if(raw) state=JSON.parse(raw)||{}; }catch(e){}
+render(); setSync(false,"本机暂存");
+saveFn=()=>{ try{ localStorage.setItem("plan-check",JSON.stringify(state)); }catch(e){} };
+
+(async()=>{
+  if(!window.claude||!claude.use) return;
+  let db=null; try{ db=await claude.use("db"); }catch(e){}
+  if(!db){ return; }
+  const ref=db.doc("state/checklist");
+  let ready=false;
+  ref.onSnapshot(snap=>{
+    const d=snap.exists?snap.data():null;
+    if(d&&d.items&&typeof d.items==="object"){ state=d.items; }
+    ready=true; render(); setSync(true,"已同步到云端");
+  }, err=>{ setSync(false,"存档不可用，仅本机暂存"); });
+  saveFn=async()=>{
+    try{ localStorage.setItem("plan-check",JSON.stringify(state)); }catch(e){}
+    if(!ready) return;
+    try{ await ref.set({items:state, updatedAt:new Date().toISOString()}); }
+    catch(e){ setSync(false,"保存失败，仅本机暂存"); }
+  };
+})();
+/* ---------- 打工日历 ---------- */
+const D0=new Date(2026,8,14), D1=new Date(2027,1,18), LIVE=3300000, GOAL=20000000;
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const mk=(y,m,d)=>new Date(y,m,d);
+function planDay(d){
+  const w=(d.getDay()+6)%7;   // 0=周一 … 6=周日
+  if(w===6) return false;     // 周日办公室公休
+  const t=d.getTime();
+  if((t>=mk(2026,9,19)&&t<=mk(2026,9,25))||(t>=mk(2026,11,7)&&t<=mk(2026,11,13))) return w===5;
+  if(t<=mk(2026,11,13)) return w===0||w===1||w===4||w===5;   // 学期中 一·二·五·六
+  if(t<mk(2026,11,28)) return w<=5;                          // 假期A 一~六
+  if(t<=mk(2027,0,15)) return w===5;                         // 微积分期 只周六
+  if(t<mk(2027,1,11)) return w<=5;                           // 假期B 一~六
+  return w===5;
+}
+function hiDay(d){
+  const s=new Date(d); s.setDate(s.getDate()-((d.getDay()+6)%7));
+  let n=0;
+  for(let i=0;i<7;i++){ const x=new Date(s); x.setDate(s.getDate()+i);
+    if(planDay(x)){ n++; if(x.getTime()===d.getTime()) return n<=2; } }
+  return false;
+}
+const planAmt=d=>planDay(d)?(hiDay(d)?537000:437000):0;
+
+let earn={}, saveE=null, curM=new Date(2026,8,1);
+
+function planTo(end){ // 计划累计收入（含 end 当天）
+  let s=0,d=new Date(D0);
+  while(d<=end&&d<D1){ s+=planAmt(d); d.setDate(d.getDate()+1); }
+  return s;
+}
+function stats(){
+  const now=new Date(); now.setHours(0,0,0,0);
+  const asOf=new Date(Math.min(Math.max(now.getTime(),D0.getTime()),D1.getTime()));
+  let inc=0,days=0;
+  for(const k in earn){ const v=+earn[k]||0; if(v>0&&k>=iso(D0)){ inc+=v; days++; } }
+  const elapsed=Math.max(0,Math.round((asOf-D0)/864e5));
+  const live=LIVE*elapsed/30.44;
+  const net=inc-live;
+  return {inc,days,live,net,asOf,elapsed,planned:planTo(asOf)};
+}
+function fmt(v){ return (v/10000).toLocaleString("zh-CN",{maximumFractionDigits:0}); }
+
+function renderPiggy(){
+  const s=stats();
+  const pct=Math.max(0,Math.min(100,s.net/GOAL*100));
+  const H=136, y=186-H*pct/100;
+  const f=document.getElementById("fill");
+  f.setAttribute("y",y); f.setAttribute("height",186-y);
+  const w=document.getElementById("wave");
+  if(pct<0.6){ w.setAttribute("d",""); }
+  else{ w.setAttribute("d",`M26 ${y} q 13 -6 27 0 t 27 0 t 27 0 t 27 0 L134 ${y+9} L26 ${y+9} Z`); }
+  document.getElementById("jarpct").textContent=pct.toFixed(0)+"%";
+  document.getElementById("pigAmt").innerHTML=fmt(Math.max(0,s.net))+'<small>만 · 目标 2,000 만</small>';
+  document.getElementById("kDays").textContent=s.days+" 天";
+  document.getElementById("kInc").textContent=fmt(s.inc)+" 만";
+  document.getElementById("kLive").textContent="−"+fmt(s.live)+" 만";
+
+  const dv=s.inc-s.planned;
+  const de=document.getElementById("kDiff");
+  if(s.days===0){ de.textContent="—"; de.className=""; }
+  else { de.textContent=(dv>=0?"+":"")+fmt(dv)+" 만"; de.className=dv>=0?"up":"dn"; }
+
+  const eta=document.getElementById("kEta");
+  if(s.days<3){ eta.textContent="—"; eta.className=""; }
+  else{
+    const rate=s.inc/s.days, rest=GOAL-s.net;
+    let d=new Date(s.asOf), acc=s.net, guard=0;
+    while(acc<GOAL&&d<new Date(2028,0,1)&&guard++<900){
+      d.setDate(d.getDate()+1);
+      if(planDay(d)) acc+=rate;
+      acc-=LIVE/30.44;
+    }
+    const ok=acc>=GOAL;
+    eta.textContent= ok? (d.getMonth()+1)+"/"+d.getDate() : "达不到";
+    eta.className= ok&&d<=D1 ? "up":"dn";
+  }
+  const m=document.getElementById("pigMsg");
+  if(s.days===0) m.textContent="还没录入任何一天。点下面日历里的日子开始记。";
+  else if(dv>=0) m.textContent=`已录 ${s.days} 天，比计划多赚 ${fmt(dv)} 만。按这个节奏，出发时会超过目标。`;
+  else m.textContent=`已录 ${s.days} 天，比计划少 ${fmt(-dv)} 만。缺口相当于 ${(Math.abs(dv)/450000).toFixed(1)} 天班，还有时间补。`;
+}
+
+const MN=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+function renderCal(){
+  const y=curM.getFullYear(), m=curM.getMonth();
+  document.getElementById("mlabel").textContent=y+" 年 "+MN[m];
+  const first=new Date(y,m,1), last=new Date(y,m+1,0);
+  const lead=(first.getDay()+6)%7;
+  let h='<div class="dh">一</div><div class="dh">二</div><div class="dh">三</div><div class="dh">四</div><div class="dh">五</div><div class="dh we">六</div><div class="dh we">日</div>';
+  for(let i=0;i<lead;i++) h+='<button class="cell" disabled></button>';
+  const today=new Date(); today.setHours(0,0,0,0);
+  let pd=0,pa=0,ad=0,aa=0;
+  for(let dd=1;dd<=last.getDate();dd++){
+    const d=new Date(y,m,dd), k=iso(d);
+    const inRange=d>=D0&&d<D1;
+    const pl=inRange&&planDay(d), hv=earn[k]!=null;
+    if(pl){ pd++; pa+=planAmt(d); }
+    if(hv&&(+earn[k])>0){ ad++; aa+=+earn[k]; }
+    const cls=["cell"];
+    if(pl) cls.push("planned");
+    if(hv&&(+earn[k])>0) cls.push("has");
+    if(d.getTime()===today.getTime()) cls.push("today");
+    h+=`<button class="${cls.join(" ")}" data-k="${k}" ${inRange?"":"disabled"}>
+      <span class="dn2">${dd}</span>
+      ${pl?`<span class="pl">计划 ${hiDay(d)?"★":""}${(planAmt(d)/10000).toFixed(1)}</span>`:""}
+      ${hv?`<span class="amt">${(+earn[k]/10000).toFixed(1)}</span>`:""}
+      ${pl||hv?'<span class="dot"></span>':""}</button>`;
+  }
+  document.getElementById("cgrid").innerHTML=h;
+  document.getElementById("minfo").innerHTML=
+    `计划 <b>${pd}</b> 天 · <b>${fmt(pa)}</b> 만<br>已录 <b>${ad}</b> 天 · <b>${fmt(aa)}</b> 만`;
+  document.getElementById("prev").disabled = (y===2026&&m<=8);
+  document.getElementById("next").disabled = (y===2027&&m>=1);
+}
+
+const MONTHS=[[2026,8,"9 月",10,497],[2026,9,"10 月",15,726],[2026,10,"11 月",17,833],
+              [2026,11,"12 月",16,759],[2027,0,"1 月",15,726],[2027,1,"2 月",10,477]];
+function renderMonths(){
+  let h="";
+  for(const [y,m,label,pd,pa] of MONTHS){
+    let ad=0,aa=0;
+    for(const k in earn){ const v=+earn[k]||0;
+      if(v>0){ const p=k.split("-"); if(+p[0]===y&&+p[1]===m+1){ ad++; aa+=v; } } }
+    const diff=aa-(ad?pa*10000*(ad/pd):0);
+    const shown=ad>0;
+    h+=`<tr><td>${label}</td><td class="r">${pd}</td><td class="r">${pa} 만</td>
+      <td class="r">${shown?ad:"—"}</td><td class="r">${shown?fmt(aa)+" 만":"—"}</td>
+      <td class="r" style="color:${shown?(diff>=0?"var(--class)":"var(--alert)"):"var(--ink3)"}">${shown?(diff>=0?"+":"")+fmt(diff)+" 만":"—"}</td></tr>`;
+  }
+  document.getElementById("mtb").innerHTML=h;
+}
+const renderWork=()=>{ renderPiggy(); renderCal(); renderMonths(); };
+
+/* popover */
+let popKey=null;
+const pop=document.getElementById("pop"), popI=document.getElementById("popI");
+const WD=["一","二","三","四","五","六","日"];
+function openPop(k){
+  popKey=k; const p=k.split("-").map(Number), d=new Date(p[0],p[1]-1,p[2]);
+  document.getElementById("popT").textContent=`${p[1]}月${p[2]}日 周${WD[(d.getDay()+6)%7]}`;
+  document.getElementById("popD").textContent= planDay(d)
+    ? `计划上班日，保底 ${(planAmt(d)/10000).toFixed(1)} 만${hiDay(d)?"（高档日）":""}`
+    : "计划休息日";
+  popI.value = earn[k]!=null ? (+earn[k]/10000) : "";
+  pop.classList.add("on"); setTimeout(()=>popI.focus(),40);
+}
+function closePop(){ pop.classList.remove("on"); popKey=null; }
+function savePop(v){
+  if(popKey==null) return;
+  if(v===null) delete earn[popKey]; else earn[popKey]=Math.round(v*10000);
+  closePop(); renderWork(); if(saveE) saveE();
+}
+document.getElementById("cgrid").addEventListener("click",e=>{
+  const c=e.target.closest(".cell"); if(c&&!c.disabled) openPop(c.dataset.k);
+});
+document.querySelector(".quick").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(b) savePop(+b.dataset.v);
+});
+document.getElementById("popOK").onclick=()=>savePop(popI.value===""?null:+popI.value);
+document.getElementById("popDel").onclick=()=>savePop(null);
+document.getElementById("popX").onclick=closePop;
+pop.addEventListener("click",e=>{ if(e.target===pop) closePop(); });
+popI.addEventListener("keydown",e=>{ if(e.key==="Enter") savePop(popI.value===""?null:+popI.value); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&pop.classList.contains("on")) closePop(); });
+document.getElementById("prev").onclick=()=>{ curM.setMonth(curM.getMonth()-1); renderCal(); };
+document.getElementById("next").onclick=()=>{ curM.setMonth(curM.getMonth()+1); renderCal(); };
+
+/* tabs */
+document.querySelector(".tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+b.dataset.v));
+  document.getElementById("nav").style.display = b.dataset.v==="plan" ? "" : "none";
+  window.scrollTo({top:0,behavior:"instant"});
+});
+
+/* 存档 */
+try{ const r=localStorage.getItem("plan-earn"); if(r) earn=JSON.parse(r)||{}; }catch(e){}
+renderWork();
+saveE=()=>{ try{ localStorage.setItem("plan-earn",JSON.stringify(earn)); }catch(e){} };
+(async()=>{
+  if(!window.claude||!claude.use) return;
+  let db=null; try{ db=await claude.use("db"); }catch(e){}
+  if(!db) return;
+  const ref=db.doc("state/earnings"); let ready=false;
+  ref.onSnapshot(s=>{
+    const d=s.exists?s.data():null;
+    if(d&&d.items&&typeof d.items==="object") earn=d.items;
+    ready=true; renderWork();
+  },()=>{});
+  saveE=async()=>{
+    try{ localStorage.setItem("plan-earn",JSON.stringify(earn)); }catch(e){}
+    if(!ready) return;
+    try{ await ref.set({items:earn,updatedAt:new Date().toISOString()}); }catch(e){}
+  };
+})();
+
+/* ---------- 页内问 Claude ---------- */
+const CTX=`你是这个学生规划页面里的助手。用中文回答，简短直接，不要客套。
+
+【固定事实】
+- 今天基准日 2026-09-14。2027-02-25 南加大语言班开课（项目到 6/17），2027-02-18 出发。
+- 三门课：毕业作品设计(캡스톤,김수민,공대강당)、广告的理解(광고의이해,안순태,全程视频,重修)、线性代数I(선형대수학I,황지현)。
+- 课表：周二 12:30-14:00 毕业作品；周三 15:00-16:30 线代；周四 15:00-18:00 毕业作品；周五 12:30-14:00 线代。周二 18:00 线代练习课自愿。
+- 广告的理解：中间考 10/21(三)18:30，期末考 12/9(三)18:30，本人发表在第12周(11/16-22)。8次周作业周五17:00截止：9/18、9/25、10/2、10/9、11/6、11/13、11/20、11/27。重修，只需每次作业45分钟、发表周3小时、考试周各20小时。
+- 寒假微积分 12/28–1/15 每天12:30-15:30 周一至周五；选课 11/20，缴费 12月初。计入主GPA。
+- 졸업의사 신청窗口约 11/13–11/27。校规：유예后不能修课。所以必须先选课缴费再申请延期。
+- 打工：每100分钟12万韩币，上班准备90分钟，通勤单程20分钟。保底日43.7万，每周前两个工作日53.7万。周日公休不能上班。
+- 计划工作日：学期中 周一二五六；考试周(10/19-25、12/7-13)只周六；假期(12/14-27、1/16-2/10) 周一至周六；微积分期(12/28-1/15)只周六；2/11后只周六。共83天。
+- 在韩生活费 330万/月。存款目标 2000万。计划落点 2,315万，1/29 越过目标。
+- 赴美费用由家里支援，约2,824万，不进她的存款。I-20资金证明已于9/14提交。
+- ADsP第51回：9/28-10/2报名，10/31考试，11/20出成绩。
+- 优先级：线代与微积分成绩 > 南加大与签证申请无误 > 驾照 > 存款 > ADsP > 实习申请。永不砍课和GPA。
+
+【回答要求】
+- 涉及数字时用下面的实时数据算，不要凭空估。
+- 不知道就说不知道，不要编。
+- 每次回答控制在 150 字以内，除非用户要求展开。`;
+
+function liveCtx(){
+  const s=stats();
+  const done=TODOS.filter(t=>state[t.id]);
+  const undone=TODOS.filter(t=>!state[t.id]);
+  const soon=undone.filter(t=>t.iso<="2026-10-10").map(t=>`${t.when} ${t.t}`);
+  const ent=Object.entries(earn).filter(([k,v])=>+v>0).sort();
+  return `【她的实时数据】
+待办 ${TODOS.length} 项，已完成 ${done.length} 项：${done.map(t=>t.t).join("、")||"（无）"}
+最近未完成：${soon.join("；")||"（无）"}
+打工已录入 ${s.days} 天，累计收入 ${(s.inc/10000).toFixed(1)}만，已扣生活费 ${(s.live/10000).toFixed(1)}만，当前净存 ${(s.net/10000).toFixed(1)}만
+对比计划：${s.inc>=s.planned?"超前":"落后"} ${(Math.abs(s.inc-s.planned)/10000).toFixed(1)}만
+录入明细：${ent.length?ent.map(([k,v])=>k+"="+(v/10000).toFixed(1)).join(" "):"（无）"}`;
+}
+
+let turns=[], busy=false, sampleFn=null;
+
+const cb=document.getElementById("chatB");
+function bubble(cls,txt){ const d=document.createElement("div"); d.className="msg "+cls; d.textContent=txt;
+  cb.appendChild(d); cb.scrollTop=cb.scrollHeight; return d; }
+
+function errMsg(e){
+  const c=e&&e.code;
+  if(c==="server_not_connected") return "Codex 没连上。host 服务器只在 Claude 桌面客户端里能用；如果你已经在客户端里，那就是配置还没加或还没重启。";
+  if(c==="needs_reauth") return "Codex 需要重新授权。到客户端的连接器设置里重连一次。";
+  if(c==="selection_required") return "有多个同名服务器，需要你在客户端里选一个。";
+  if(c==="cancelled") return "你取消了这次调用。";
+  if(c==="server_unavailable") return "Codex 暂时没响应，稍后再试一次。";
+  if(c==="tool_error") return "Codex 报错了：" + (e.message||"没有说明原因");
+  if(c==="not_in_manifest") return "这个页面没有声明可以调用 Codex。";
+  if(c==="not_granted") return "你拒绝了授权。刷新页面可以重新选择。";
+  if(c==="rate_limited") return "调用太频繁，等一下。";
+  return "出错了：" + (e&&e.message||"未知原因");
+}
+
+async function ask(q){
+  if(busy||!q.trim()) return;
+  busy=true; document.getElementById("chatS").disabled=true;
+  bubble("u",q); turns.push({role:"user",content:q});
+  const a=bubble("a","思考中…");
+  try{
+    if(!sampleFn){ a.textContent="这个环境里问不了。"; }
+    else{
+      const input=[{role:"user",content:CTX+"\n\n"+liveCtx()+"\n\n【问题】"+q}];
+      for(let i=Math.max(0,turns.length-7);i<turns.length-1;i++) input.push(turns[i]);
+      input.push({role:"user",content:q});
+      const r=await sampleFn(input,{onText:({text})=>{a.textContent=text;cb.scrollTop=cb.scrollHeight;}});
+      a.textContent=r.text||"（没有返回内容）";
+      turns.push({role:"assistant",content:a.textContent});
+    }
+  }catch(e){ a.textContent=errMsg(e); }
+  cb.scrollTop=cb.scrollHeight;
+  busy=false; document.getElementById("chatS").disabled=false;
+}
+
+document.getElementById("fab").onclick=()=>{
+  document.getElementById("chat").classList.add("on");
+  document.getElementById("fab").style.display="none";
+  document.getElementById("chatI").focus();
+};
+document.getElementById("chatX").onclick=()=>{
+  document.getElementById("chat").classList.remove("on");
+  document.getElementById("fab").style.display="";
+};
+document.getElementById("chatS").onclick=()=>{
+  const i=document.getElementById("chatI"); const v=i.value; i.value=""; i.style.height="auto"; ask(v);
+};
+document.getElementById("chatI").addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); document.getElementById("chatS").click(); }
+});
+document.getElementById("chatI").addEventListener("input",e=>{
+  e.target.style.height="auto"; e.target.style.height=Math.min(110,e.target.scrollHeight)+"px";
+});
+document.querySelector(".chips").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(b) ask(b.textContent);
+});
+
+(async()=>{
+  if(!window.claude||!claude.use){
+    // 不在 claude.ai 里打开（比如这个 GitHub Pages 部署）：这个入口本来就用不了，直接隐藏，
+    // 不留一个点了没反应的死按钮。
+    document.getElementById("fab").hidden = true;
+    return;
+  }
+  let sp=null; try{ sp=await claude.use("sample"); }catch(e){}
+  sampleFn=sp||null;
+  document.getElementById("chatSt").textContent = sampleFn ? "知道你的实时进度" : "当前环境问不了";
+})();
+
+
+</script>
+</body>
+</html>
