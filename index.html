@@ -730,6 +730,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
     <div class="pg"><dt>累计收入</dt><dd id="kInc">0 만</dd></div>
     <button type="button" class="pg" id="kLiveBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>已扣生活费 · 点击改月标准</dt><dd id="kLive">0 만</dd></button>
     <button type="button" class="pg" id="kExtraBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>本月额外支出 · 点击管理</dt><dd id="kExtra">0 만</dd></button>
+    <button type="button" class="pg" id="kScuBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>SCU相关支出 · 不计入存款</dt><dd id="kScu">0 만</dd></button>
     <div class="pg"><dt>对比计划</dt><dd id="kDiff">—</dd></div>
     <div class="pg"><dt>预计达成</dt><dd id="kEta">—</dd></div>
     <div class="pg"><dt>实际支出</dt><dd id="kExp">0 만</dd></div>
@@ -831,8 +832,11 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
 
 
 <div class="pop" id="extraPop"><div class="pop-c" style="max-width:380px">
- <h4>重大额外支出</h4><div class="pd">机票、签证费这类不是每天都有的大额花销，跟日常生活费分开记</div>
- <div class="todos" id="extraList" style="margin-bottom:14px;max-height:240px;overflow-y:auto"></div>
+ <h4>重大支出</h4><div class="pd">机票、签证费这类不是每天都有的大额花销，跟日常生活费分开记。备注里带"SCU"三个字的会自动归到下面 SCU 相关支出，不计入你自己的收支和存款进度</div>
+ <div style="font-size:12.5px;font-weight:700;color:var(--ink2);margin:4px 0 6px">个人重大支出</div>
+ <div class="todos" id="extraList" style="margin-bottom:14px;max-height:160px;overflow-y:auto"></div>
+ <div style="font-size:12.5px;font-weight:700;color:var(--ink2);margin:4px 0 6px">SCU 相关支出 · 不计入存款</div>
+ <div class="todos" id="extraListScu" style="margin-bottom:14px;max-height:160px;overflow-y:auto"></div>
  <div style="font-size:11.5px;color:var(--ink3);margin:2px 0 4px;text-align:left">金额（만원）</div>
  <input id="exAmt" type="number" inputmode="decimal" step="0.1" min="0" placeholder="0">
  <div style="font-size:11.5px;color:var(--ink3);margin:12px 0 4px;text-align:left">备注</div>
@@ -1013,16 +1017,21 @@ function hiDay(d){
 }
 const planAmt=d=>planDay(d)?(hiDay(d)?537000:437000):0;
 
-let earn={}, exp={}, extras=[], curM=new Date(2026,8,1);
+let earn={}, exp={}, extras=[], extrasScu=[], curM=new Date(2026,8,1);
+const isScuNote=n=>/scu/i.test(n||"");
 
 function planTo(end){ // 计划累计收入（含 end 当天）
   let s=0,d=new Date(D0);
   while(d<=end&&d<D1){ s+=planAmt(d); d.setDate(d.getDate()+1); }
   return s;
 }
-function extraTotal(upTo){ // 到某天为止，所有重大额外支出合计
+function extraTotal(upTo){ // 到某天为止，所有个人重大支出合计（SCU相关的不算在里面）
   const upk=iso(upTo); let t=0;
   extras.forEach(e=>{ if(e.date && e.date<=upk) t+=(+e.amount||0); });
+  return t;
+}
+function scuTotal(){ // SCU相关支出合计，不影响存款进度，纯记录
+  let t=0; extrasScu.forEach(e=>{ t+=(+e.amount||0); });
   return t;
 }
 function extraInMonth(y,m){
@@ -1088,6 +1097,7 @@ function renderPiggy(){
   if(s.days===0 && s.expDays===0 && s.extrasTotal===0){ ne.textContent="—"; ne.className=""; }
   else { ne.textContent=(s.netActual>=0?"+":"")+fmt(s.netActual)+" 만"; ne.className=s.netActual>=0?"up":"dn"; }
   document.getElementById("kExtra").textContent=fmt(extraInMonth(curM.getFullYear(),curM.getMonth()))+" 만";
+  document.getElementById("kScu").textContent=fmt(scuTotal())+" 만";
 
   const m=document.getElementById("pigMsg");
   if(s.days===0) m.textContent="还没录入任何一天。点下面日历里的日子开始记。";
@@ -1206,12 +1216,12 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&pop.classList.cont
 document.getElementById("prev").onclick=()=>{ curM.setMonth(curM.getMonth()-1); renderWork(); };
 document.getElementById("next").onclick=()=>{ curM.setMonth(curM.getMonth()+1); renderWork(); };
 
-/* 重大额外支出：弹窗里管理，可以记多笔，每笔单独备注 */
+/* 重大支出：弹窗里管理，可以记多笔，每笔单独备注。备注带"SCU"的自动归到SCU相关支出，不算存款 */
 const extraPop=document.getElementById("extraPop");
-function renderExtraList(){
-  const list=[...extras].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
-  const el=document.getElementById("extraList");
-  el.innerHTML = list.length ? list.map(e=>{
+function renderExtraGroup(list, elId, emptyText){
+  const sorted=[...list].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const el=document.getElementById(elId);
+  el.innerHTML = sorted.length ? sorted.map(e=>{
     const p=(e.date||"").split("-").map(Number);
     const dl = p.length===3 ? `${p[1]}/${p[2]}` : "无日期";
     return `<div style="display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)">
@@ -1222,7 +1232,11 @@ function renderExtraList(){
       <div style="font-weight:700;color:var(--alert);white-space:nowrap">-${(e.amount/10000).toFixed(1)} 만</div>
       <button class="del-x" data-id="${e.id}" aria-label="删除">×</button>
     </div>`;
-  }).join("") : '<div class="empty">还没记过额外支出</div>';
+  }).join("") : `<div class="empty">${emptyText}</div>`;
+}
+function renderExtraList(){
+  renderExtraGroup(extras, "extraList", "还没记过额外支出");
+  renderExtraGroup(extrasScu, "extraListScu", "还没记过SCU相关支出");
 }
 function openExtraPop(){
   renderExtraList();
@@ -1233,6 +1247,7 @@ function openExtraPop(){
 }
 function closeExtraPop(){ extraPop.classList.remove("on"); }
 document.getElementById("kExtraBtn").addEventListener("click", openExtraPop);
+document.getElementById("kScuBtn").addEventListener("click", openExtraPop);
 document.getElementById("exCancel").addEventListener("click", closeExtraPop);
 extraPop.addEventListener("click", e=>{ if(e.target===extraPop) closeExtraPop(); });
 document.getElementById("exAdd").addEventListener("click", async()=>{
@@ -1241,13 +1256,16 @@ document.getElementById("exAdd").addEventListener("click", async()=>{
   if(!n || n<=0){ alert("先填金额"); return; }
   const amount=Math.round(n*10000);
   const local={id:"tmp-"+Date.now(), date:dv||null, note:nv, amount};
-  extras.push(local); renderWork(); renderExtraList();
+  const scu=isScuNote(nv);
+  if(scu) extrasScu.push(local); else extras.push(local);
+  renderWork(); renderExtraList();
   document.getElementById("exAmt").value=""; document.getElementById("exNote").value="";
   try{
     const row=await window.Store.add("work",{title:"extra_expense", date:dv||null, note:nv, amount});
     local.id=row.id;
   }catch(e){
-    extras=extras.filter(x=>x!==local); renderWork(); renderExtraList();
+    if(scu) extrasScu=extrasScu.filter(x=>x!==local); else extras=extras.filter(x=>x!==local);
+    renderWork(); renderExtraList();
     alert("保存失败："+(e.message||e));
   }
 });
@@ -1259,6 +1277,15 @@ document.getElementById("extraList").addEventListener("click", async e=>{
   if(id.startsWith("tmp-")) return;
   try{ await window.Store.remove(id); }
   catch(e2){ extras=before; renderWork(); renderExtraList(); alert("删除失败："+(e2.message||e2)); }
+});
+document.getElementById("extraListScu").addEventListener("click", async e=>{
+  const b=e.target.closest(".del-x"); if(!b) return;
+  const id=b.dataset.id;
+  const before=extrasScu;
+  extrasScu=extrasScu.filter(x=>x.id!==id); renderWork(); renderExtraList();
+  if(id.startsWith("tmp-")) return;
+  try{ await window.Store.remove(id); }
+  catch(e2){ extrasScu=before; renderWork(); renderExtraList(); alert("删除失败："+(e2.message||e2)); }
 });
 
 /* 底部导航切换 */
@@ -1277,12 +1304,15 @@ async function loadWork(){
   earn={}; exp={};
   let rows=[];
   try{ rows = await window.Store.list("work"); }catch(e){ rows=[]; }
-  extras=[];
+  extras=[]; extrasScu=[];
   rows.forEach(r=>{
     if(r.title==="income" && r.date && +r.amount>0) earn[r.date]=Math.round(+r.amount);
     else if(r.title==="expense" && r.date && +r.amount>0) exp[r.date]=Math.round(+r.amount);
     else if(r.title==="__setting_living_cost__" && r.amount!=null) LIVE=Math.round(+r.amount);
-    else if(r.title==="extra_expense") extras.push({id:r.id, date:r.date, note:r.note||"", amount:+r.amount||0});
+    else if(r.title==="extra_expense"){
+      const it={id:r.id, date:r.date, note:r.note||"", amount:+r.amount||0};
+      (isScuNote(it.note) ? extrasScu : extras).push(it);
+    }
   });
 }
 async function bootWork(){
