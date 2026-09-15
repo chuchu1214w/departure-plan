@@ -750,8 +750,9 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
   <div class="cgrid" id="cgrid"></div>
   <div class="call info" style="margin-top:16px"><b>浅色格是计划上班日，带 ★ 的是高档日（保底 53.7 만）。周日全部空着，办公室公休。</b>
   其余计划日保底 43.7 万。填了钱的格子会变绿。<br><br>
-  9/1–9/13 已上 7 天赚 305.8 만，那笔钱已花在生活费上，不计入存款，所以日历从 9/14 开始算。</div>
-  <button class="addbtn" id="impWorkEarly" style="margin-top:12px">↻ 补录 9 月初收入（7 天，只记录不计入存款）</button>
+  日历从 9/1 开始算，9 月初已上的班也计入存款进度。</div>
+  <button class="addbtn" id="impWorkEarly" style="margin-top:12px">↻ 补录 9 月初收入（7 天）</button>
+  <button class="addbtn" id="impWorkExp" style="margin-top:8px">↻ 补录 9/1–9/12 生活费支出（含 2 笔重大支出）</button>
  </div></section>
 
 <section id="wk"><div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>逐月进度</h2></div>
@@ -988,7 +989,7 @@ saveFn=()=>{ try{ localStorage.setItem("plan-check",JSON.stringify(state)); }cat
   };
 })();
 /* ---------- 打工日历 ---------- */
-const D0=new Date(2026,8,14), D1=new Date(2027,1,18), GOAL=20000000;
+const D0=new Date(2026,8,1), D1=new Date(2027,1,18), GOAL=20000000;
 let LIVE=3300000;
 const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const mk=(y,m,d)=>new Date(y,m,d);
@@ -1133,7 +1134,7 @@ function renderCal(){
   document.getElementById("next").disabled = (y===2027&&m>=1);
 }
 
-const MONTHS=[[2026,8,"9 月",10,497],[2026,9,"10 月",15,726],[2026,10,"11 月",17,833],
+const MONTHS=[[2026,8,"9 月",17,833],[2026,9,"10 月",15,726],[2026,10,"11 月",17,833],
               [2026,11,"12 月",16,759],[2027,0,"1 月",15,726],[2027,1,"2 月",10,477]];
 function renderMonths(){
   let h="";
@@ -1321,6 +1322,44 @@ document.getElementById("impWorkEarly").addEventListener("click", async(e)=>{
       const it=SEED_WORK_EARLY[i];
       btn.textContent=`补录中…${i+1}/${SEED_WORK_EARLY.length}`;
       await window.Store.upsertByTitle("work","income",{date:it.date,amount:it.amount});
+    }
+    await loadWork(); renderWork();
+    btn.textContent="已补录 ✓"; setTimeout(()=>{ btn.textContent=label; btn.disabled=false; },2000);
+  }catch(e2){ alert("补录失败："+(e2.message||e2)); btn.textContent=label; btn.disabled=false; }
+});
+
+const SEED_WORK_EXP=[
+  {date:"2026-09-01",amount:35100},
+  {date:"2026-09-02",amount:73350},
+  {date:"2026-09-03",amount:85900},
+  {date:"2026-09-04",amount:17450},
+  {date:"2026-09-05",amount:106190},
+  {date:"2026-09-06",amount:37340},
+  {date:"2026-09-07",amount:33150},
+  {date:"2026-09-08",amount:93597},
+  {date:"2026-09-09",amount:395168},
+  {date:"2026-09-10",amount:32400},
+  {date:"2026-09-11",amount:41383},
+  {date:"2026-09-12",amount:17500}
+];
+const SEED_WORK_EXTRA=[
+  {date:"2026-09-06",note:"房租",amount:1000000},
+  {date:"2026-09-08",note:"保险费",amount:242000}
+];
+document.getElementById("impWorkExp").addEventListener("click", async(e)=>{
+  const btn=e.target.closest("button"), label=btn.textContent, total=SEED_WORK_EXP.length+SEED_WORK_EXTRA.length;
+  btn.disabled=true;
+  try{
+    for(let i=0;i<SEED_WORK_EXP.length;i++){
+      const it=SEED_WORK_EXP[i];
+      btn.textContent=`补录中…${i+1}/${total}`;
+      await window.Store.upsertByTitle("work","expense",{date:it.date,amount:it.amount});
+    }
+    for(let i=0;i<SEED_WORK_EXTRA.length;i++){
+      const it=SEED_WORK_EXTRA[i];
+      btn.textContent=`补录中…${SEED_WORK_EXP.length+i+1}/${total}`;
+      const dup=extras.find(x=>x.date===it.date && x.note===it.note && +x.amount===it.amount);
+      if(!dup) await window.Store.add("work",{title:"extra_expense",date:it.date,note:it.note,amount:it.amount});
     }
     await loadWork(); renderWork();
     btn.textContent="已补录 ✓"; setTimeout(()=>{ btn.textContent=label; btn.disabled=false; },2000);
