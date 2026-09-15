@@ -728,6 +728,8 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
     <div class="pg"><dt>已扣生活费</dt><dd id="kLive">0 만</dd></div>
     <div class="pg"><dt>对比计划</dt><dd id="kDiff">—</dd></div>
     <div class="pg"><dt>预计达成</dt><dd id="kEta">—</dd></div>
+    <div class="pg"><dt>实际支出</dt><dd id="kExp">0 만</dd></div>
+    <div class="pg"><dt>实际结余</dt><dd id="kNet2">—</dd></div>
    </dl>
   </div>
  </div>
@@ -802,16 +804,20 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
 </div>
 
 <div class="pop" id="pop"><div class="pop-c">
- <h4 id="popT">录入收入</h4><div class="pd" id="popD"></div>
+ <h4 id="popT">录入这一天</h4><div class="pd" id="popD"></div>
+ <div style="font-size:11.5px;color:var(--ink3);margin:2px 0 4px;text-align:left">收入</div>
  <input id="popI" type="number" inputmode="decimal" step="0.1" min="0" placeholder="0">
  <div class="unit">单位：만원</div>
  <div class="quick">
   <button data-v="43.7">43.7</button><button data-v="53.7">53.7</button>
   <button data-v="60">60</button><button data-v="0">休息</button>
  </div>
+ <div style="font-size:11.5px;color:var(--ink3);margin:12px 0 4px;text-align:left">支出</div>
+ <input id="popX2" type="number" inputmode="decimal" step="0.1" min="0" placeholder="0">
+ <div class="unit">单位：만원，吃饭交通这些当天花掉的</div>
  <div class="pop-a">
   <button id="popDel" class="del">清除</button>
-  <button id="popX">取消</button>
+  <button id="popXCancel">取消</button>
   <button id="popOK" class="pri2">保存</button>
  </div>
 </div></div>
@@ -982,7 +988,7 @@ function hiDay(d){
 }
 const planAmt=d=>planDay(d)?(hiDay(d)?537000:437000):0;
 
-let earn={}, saveE=null, curM=new Date(2026,8,1);
+let earn={}, exp={}, saveE=null, saveX=null, curM=new Date(2026,8,1);
 
 function planTo(end){ // 计划累计收入（含 end 当天）
   let s=0,d=new Date(D0);
@@ -994,10 +1000,12 @@ function stats(){
   const asOf=new Date(Math.min(Math.max(now.getTime(),D0.getTime()),D1.getTime()));
   let inc=0,days=0;
   for(const k in earn){ const v=+earn[k]||0; if(v>0&&k>=iso(D0)){ inc+=v; days++; } }
+  let expTotal=0,expDays=0;
+  for(const k in exp){ const v=+exp[k]||0; if(v>0){ expTotal+=v; expDays++; } }
   const elapsed=Math.max(0,Math.round((asOf-D0)/864e5));
   const live=LIVE*elapsed/30.44;
   const net=inc-live;
-  return {inc,days,live,net,asOf,elapsed,planned:planTo(asOf)};
+  return {inc,days,live,net,asOf,elapsed,planned:planTo(asOf),expTotal,expDays,netActual:inc-expTotal};
 }
 function fmt(v){ return (v/10000).toLocaleString("zh-CN",{maximumFractionDigits:0}); }
 
@@ -1035,10 +1043,20 @@ function renderPiggy(){
     eta.textContent= ok? (d.getMonth()+1)+"/"+d.getDate() : "达不到";
     eta.className= ok&&d<=D1 ? "up":"dn";
   }
+  document.getElementById("kExp").textContent=fmt(s.expTotal)+" 만";
+  const ne=document.getElementById("kNet2");
+  if(s.days===0 && s.expDays===0){ ne.textContent="—"; ne.className=""; }
+  else { ne.textContent=(s.netActual>=0?"+":"")+fmt(s.netActual)+" 만"; ne.className=s.netActual>=0?"up":"dn"; }
+
   const m=document.getElementById("pigMsg");
   if(s.days===0) m.textContent="还没录入任何一天。点下面日历里的日子开始记。";
   else if(dv>=0) m.textContent=`已录 ${s.days} 天，比计划多赚 ${fmt(dv)} 만。按这个节奏，出发时会超过目标。`;
   else m.textContent=`已录 ${s.days} 天，比计划少 ${fmt(-dv)} 만。缺口相当于 ${(Math.abs(dv)/450000).toFixed(1)} 天班，还有时间补。`;
+  if(s.expDays>0){
+    m.textContent += s.netActual>=0
+      ? ` 花了 ${fmt(s.expTotal)} 만，整体还是盈余 ${fmt(s.netActual)} 만。`
+      : ` 花了 ${fmt(s.expTotal)} 만，已经超支 ${fmt(-s.netActual)} 만了。`;
+  }
 }
 
 const MN=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
@@ -1054,7 +1072,7 @@ function renderCal(){
   for(let dd=1;dd<=last.getDate();dd++){
     const d=new Date(y,m,dd), k=iso(d);
     const inRange=d>=D0&&d<D1;
-    const pl=inRange&&planDay(d), hv=earn[k]!=null;
+    const pl=inRange&&planDay(d), hv=earn[k]!=null, xv=exp[k]!=null&&(+exp[k])>0;
     if(pl){ pd++; pa+=planAmt(d); }
     if(hv&&(+earn[k])>0){ ad++; aa+=+earn[k]; }
     const cls=["cell"];
@@ -1065,7 +1083,8 @@ function renderCal(){
       <span class="dn2">${dd}</span>
       ${pl?`<span class="pl">计划 ${hiDay(d)?"★":""}${(planAmt(d)/10000).toFixed(1)}</span>`:""}
       ${hv?`<span class="amt">${(+earn[k]/10000).toFixed(1)}</span>`:""}
-      ${pl||hv?'<span class="dot"></span>':""}</button>`;
+      ${xv?`<span class="amt" style="color:var(--alert)">-${(+exp[k]/10000).toFixed(1)}</span>`:""}
+      ${pl||hv||xv?'<span class="dot"></span>':""}</button>`;
   }
   document.getElementById("cgrid").innerHTML=h;
   document.getElementById("minfo").innerHTML=
@@ -1094,7 +1113,7 @@ const renderWork=()=>{ renderPiggy(); renderCal(); renderMonths(); };
 
 /* popover */
 let popKey=null;
-const pop=document.getElementById("pop"), popI=document.getElementById("popI");
+const pop=document.getElementById("pop"), popI=document.getElementById("popI"), popX2=document.getElementById("popX2");
 const WD=["一","二","三","四","五","六","日"];
 function openPop(k){
   popKey=k; const p=k.split("-").map(Number), d=new Date(p[0],p[1]-1,p[2]);
@@ -1103,25 +1122,34 @@ function openPop(k){
     ? `计划上班日，保底 ${(planAmt(d)/10000).toFixed(1)} 만${hiDay(d)?"（高档日）":""}`
     : "计划休息日";
   popI.value = earn[k]!=null ? (+earn[k]/10000) : "";
+  popX2.value = exp[k]!=null ? (+exp[k]/10000) : "";
   pop.classList.add("on"); setTimeout(()=>popI.focus(),40);
 }
 function closePop(){ pop.classList.remove("on"); popKey=null; }
-function savePop(v){
+function saveDay(){
   if(popKey==null) return;
-  if(v===null) delete earn[popKey]; else earn[popKey]=Math.round(v*10000);
-  closePop(); renderWork(); if(saveE) saveE();
+  const iv=popI.value, xv=popX2.value;
+  if(iv==="") delete earn[popKey]; else earn[popKey]=Math.round(+iv*10000);
+  if(xv==="") delete exp[popKey]; else exp[popKey]=Math.round(+xv*10000);
+  closePop(); renderWork(); if(saveE) saveE(); if(saveX) saveX();
+}
+function clearDay(){
+  if(popKey==null) return;
+  delete earn[popKey]; delete exp[popKey];
+  closePop(); renderWork(); if(saveE) saveE(); if(saveX) saveX();
 }
 document.getElementById("cgrid").addEventListener("click",e=>{
   const c=e.target.closest(".cell"); if(c&&!c.disabled) openPop(c.dataset.k);
 });
 document.querySelector(".quick").addEventListener("click",e=>{
-  const b=e.target.closest("button"); if(b) savePop(+b.dataset.v);
+  const b=e.target.closest("button"); if(b){ popI.value=b.dataset.v==="0"?0:b.dataset.v; }
 });
-document.getElementById("popOK").onclick=()=>savePop(popI.value===""?null:+popI.value);
-document.getElementById("popDel").onclick=()=>savePop(null);
-document.getElementById("popX").onclick=closePop;
+document.getElementById("popOK").onclick=saveDay;
+document.getElementById("popDel").onclick=clearDay;
+document.getElementById("popXCancel").onclick=closePop;
 pop.addEventListener("click",e=>{ if(e.target===pop) closePop(); });
-popI.addEventListener("keydown",e=>{ if(e.key==="Enter") savePop(popI.value===""?null:+popI.value); });
+popI.addEventListener("keydown",e=>{ if(e.key==="Enter") saveDay(); });
+popX2.addEventListener("keydown",e=>{ if(e.key==="Enter") saveDay(); });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&pop.classList.contains("on")) closePop(); });
 document.getElementById("prev").onclick=()=>{ curM.setMonth(curM.getMonth()-1); renderCal(); };
 document.getElementById("next").onclick=()=>{ curM.setMonth(curM.getMonth()+1); renderCal(); };
@@ -1136,26 +1164,12 @@ document.getElementById("botnav").addEventListener("click",e=>{
   window.dispatchEvent(new CustomEvent("view:switched",{detail:{v:b.dataset.v}}));
 });
 
-/* 存档 */
+/* 存档：收入和支出各自存本机 localStorage */
 try{ const r=localStorage.getItem("plan-earn"); if(r) earn=JSON.parse(r)||{}; }catch(e){}
+try{ const r=localStorage.getItem("plan-expense"); if(r) exp=JSON.parse(r)||{}; }catch(e){}
 renderWork();
 saveE=()=>{ try{ localStorage.setItem("plan-earn",JSON.stringify(earn)); }catch(e){} };
-(async()=>{
-  if(!window.claude||!claude.use) return;
-  let db=null; try{ db=await claude.use("db"); }catch(e){}
-  if(!db) return;
-  const ref=db.doc("state/earnings"); let ready=false;
-  ref.onSnapshot(s=>{
-    const d=s.exists?s.data():null;
-    if(d&&d.items&&typeof d.items==="object") earn=d.items;
-    ready=true; renderWork();
-  },()=>{});
-  saveE=async()=>{
-    try{ localStorage.setItem("plan-earn",JSON.stringify(earn)); }catch(e){}
-    if(!ready) return;
-    try{ await ref.set({items:earn,updatedAt:new Date().toISOString()}); }catch(e){}
-  };
-})();
+saveX=()=>{ try{ localStorage.setItem("plan-expense",JSON.stringify(exp)); }catch(e){} };
 
 /* ---------- 页内问 Claude ---------- */
 const CTX=`你是这个学生规划页面里的助手。用中文回答，简短直接，不要客套。
