@@ -369,6 +369,38 @@ ${fixed.length ? fixed.join("\n") : "（这周没有录入任何固定课程）"
     }
   });
 
+  document.getElementById("stLAHw").addEventListener("click", async (e) => {
+    const btn = e.target.closest("button"); const label = btn.textContent;
+    btn.disabled = true; btn.textContent = "添加中…";
+    try {
+      for (const it of (window.SEED_LA_HW || [])) {
+        await window.Store.upsertByTitle("study", it.title, { date: it.date, note: it.note || "" });
+      }
+      await refresh("study");
+      btn.textContent = "已添加 ✓";
+      setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 2000);
+    } catch (e2) {
+      alert("添加失败：" + (e2.message || e2));
+      btn.textContent = label; btn.disabled = false;
+    }
+  });
+
+  document.getElementById("stAdVideo").addEventListener("click", async (e) => {
+    const btn = e.target.closest("button"); const label = btn.textContent;
+    btn.disabled = true; btn.textContent = "添加中…";
+    try {
+      for (const it of (window.SEED_AD_VIDEO || [])) {
+        await window.Store.upsertByTitle("study", it.title, { date: it.date, note: it.note || "" });
+      }
+      await refresh("study");
+      btn.textContent = "已添加 ✓";
+      setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 2000);
+    } catch (e2) {
+      alert("添加失败：" + (e2.message || e2));
+      btn.textContent = label; btn.disabled = false;
+    }
+  });
+
   async function doDedupe(kind, btn) {
     btn.disabled = true; const label = btn.textContent; btn.textContent = "清理中…";
     try {
