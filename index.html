@@ -581,8 +581,8 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
 <div class="tw2"><table class="t"><thead><tr><th>预计支付</th><th>项目</th><th class="r">美元</th><th class="r">韩币</th><th>说明</th></tr></thead><tbody>
 <tr><td class="dtc">已缴 9/14</td><td>申请费</td><td class="r">$195</td><td class="r">27 만</td><td class="src2">不退</td></tr>
 <tr><td class="dtc" style="color:var(--class);font-weight:600">已录取 已缴费</td><td><b>入学押金</b></td><td class="r">$1,000</td><td class="r">138 만</td><td class="src2">9/15 缴的，I-20 签发时钟已经在走了</td></tr>
-<tr><td class="dtc">约 10/15</td><td>SEVIS I-901</td><td class="r">$350</td><td class="r">48 만</td><td class="src2">面签前至少 3 个工作日</td></tr>
-<tr><td class="dtc">约 10/20</td><td>F-1 签证费 MRV</td><td class="r">$185</td><td class="r">26 만</td><td class="src2">预约面签时缴</td></tr>
+<tr><td class="dtc">约 9/28</td><td>SEVIS I-901</td><td class="r">$350</td><td class="r">48 만</td><td class="src2">面签前至少 3 个工作日</td></tr>
+<tr><td class="dtc">约 10/1</td><td>F-1 签证费 MRV</td><td class="r">$185</td><td class="r">26 만</td><td class="src2">预约面签时缴</td></tr>
 <tr><td class="dtc">10 月</td><td>韩国驾照学院</td><td class="r">—</td><td class="r">95 만</td><td class="src2">80–110 만，待问实价</td></tr>
 <tr><td class="dtc">11 月下旬–12 月</td><td>单程机票 ICN→LAX</td><td class="r">$800</td><td class="r">110 만</td><td class="src2">F-1 下来后再订</td></tr>
 <tr><td class="dtc">1 月</td><td>洛杉矶短租押金</td><td class="r">$1,000</td><td class="r">138 만</td><td class="src2">韩国城独立房间 $500–1,600</td></tr>
@@ -657,6 +657,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
   <button class="addbtn ai" id="stImportSched">↓ 导入真实课表与线代进度（59 条）</button>
   <button class="addbtn ai" id="stLAHw">↻ 加线代每章作业截止（6 条）</button>
   <button class="addbtn ai" id="stAdVideo">↻ 加每周二广告网课打卡（15 条）</button>
+  <button class="addbtn ai" id="stEnglish">↻ 加每日英语学习（156 天）</button>
   <button class="addbtn" id="stDedupe" style="border-color:var(--alert);color:var(--alert)">清理重复项</button>
   <button class="addbtn ai" id="aiGen">✦ 生成本周学习计划</button>
  </div>
@@ -727,7 +728,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
    <dl class="pig-grid">
     <div class="pg"><dt>已录入</dt><dd id="kDays">0 天</dd></div>
     <div class="pg"><dt>累计收入</dt><dd id="kInc">0 만</dd></div>
-    <div class="pg"><dt>已扣生活费</dt><dd id="kLive">0 만</dd></div>
+    <button type="button" class="pg" id="kLiveBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>已扣生活费 · 点击改月标准</dt><dd id="kLive">0 만</dd></button>
     <div class="pg"><dt>对比计划</dt><dd id="kDiff">—</dd></div>
     <div class="pg"><dt>预计达成</dt><dd id="kEta">—</dd></div>
     <div class="pg"><dt>实际支出</dt><dd id="kExp">0 만</dd></div>
@@ -867,12 +868,13 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
 <script src="assets/seed-visa-update.js"></script>
 <script src="assets/seed-la-homework.js"></script>
 <script src="assets/seed-ad-video.js"></script>
+<script src="assets/seed-english.js"></script>
 <script src="assets/auth-ui.js"></script>
 <script src="assets/calendars.js"></script>
 <script src="assets/review.js"></script>
 
 <script>
-const TODOS=[{"id": "office", "iso": "2026-09-15", "when": "9/15 已完成", "g": "学校", "gc": "class", "t": "去学科办公室问三件事 ✓", "n": "确认无冲突：延期后是从下一个正规学期起不能修学分，계절학기不算正规学期，寒假微积分不受影响。유예 生效时点是 2 月毕业日，不是申请当天。毕业申请公告还没出，10 月中期中考后再留意", "u": 0}, {"id": "drive-q", "iso": "2026-09-16", "when": "9/16", "g": "资格", "gc": "cert", "t": "问驾照学院报价与排课方式", "n": "预算暂按 95 만。重点是能不能约到你空闲的时段", "u": 0}, {"id": "hw1", "iso": "2026-09-18", "when": "9/18", "g": "学业", "gc": "class", "t": "广告 第1次周作业", "n": "周五 17:00 截止。周四上午做完并交", "u": 0}, {"id": "hw2", "iso": "2026-09-25", "when": "9/25", "g": "学业", "gc": "class", "t": "广告 第2次周作业", "n": "周五 17:00", "u": 0}, {"id": "adsp-reg", "iso": "2026-09-28", "when": "9/28–10/2", "g": "资格", "gc": "cert", "t": "在 dataq.or.kr 报名 ADsP 第51回", "n": "窗口只有 5 天。2027 Q1 日程未公布，这很可能是出发前唯一机会", "u": 1}, {"id": "deposit", "iso": "2026-09-15", "when": "9/15 已完成", "g": "签证", "gc": "class", "t": "缴 $1,000 入学押金 ✓", "n": "已缴，I-20 签发时钟已经开始走了", "u": 0}, {"id": "hw3", "iso": "2026-10-02", "when": "10/2", "g": "学业", "gc": "class", "t": "广告 第3次周作业", "n": "周五 17:00", "u": 0}, {"id": "adsp-s1", "iso": "2026-10-05", "when": "10/5–10/18", "g": "资格", "gc": "cert", "t": "ADsP 教材通读＋真题一轮", "n": "每周 6 小时，放在周二周四上午", "u": 0}, {"id": "hw4", "iso": "2026-10-09", "when": "10/9", "g": "学业", "gc": "class", "t": "广告 第4次周作业", "n": "周五 17:00", "u": 0}, {"id": "i20", "iso": "2026-10-14", "when": "约 10/14", "g": "签证", "gc": "visa", "t": "收到 I-20 电子版", "n": "押金后 7–10 工作日。电子版打印签字即可用，不必等纸质", "u": 0}, {"id": "sevis", "iso": "2026-10-15", "when": "约 10/15", "g": "签证", "gc": "visa", "t": "交 SEVIS I-901 费 $350", "n": "面签前至少 3 个工作日，建议提前 1–2 周", "u": 1}, {"id": "drive-in", "iso": "2026-10-16", "when": "10 月", "g": "资格", "gc": "cert", "t": "报名驾照学院 2종 보통", "n": "约 13 学时。预约制，要连续时段", "u": 0}, {"id": "prof1", "iso": "2026-10-16", "when": "10 月中", "g": "教授", "gc": "self2", "t": "首次接触 CS 与传媒各一位教授", "n": "只表达读研意向，不谈推荐信", "u": 0}, {"id": "ds160", "iso": "2026-10-20", "when": "约 10/20", "g": "签证", "gc": "visa", "t": "DS-160 提交＋缴签证费 $185＋预约面签", "n": "SEVIS 后 3 工作日。首尔 F/M/J 等待不足 15 天", "u": 1}, {"id": "mid", "iso": "2026-10-21", "when": "10/21", "g": "学业", "gc": "class", "t": "广告的理解 中间考", "n": "周三 18:30。这周打工降到 2 天", "u": 1}, {"id": "adsp-s2", "iso": "2026-10-26", "when": "10/26–10/30", "g": "资格", "gc": "cert", "t": "ADsP 冲刺，每天 3 小时刷真题", "n": "期中考结束后立刻开始", "u": 0}, {"id": "adsp-ex", "iso": "2026-10-31", "when": "10/31", "g": "资格", "gc": "cert", "t": "ADsP 考试", "n": "周六 10:00–11:30。这天不排班", "u": 1}, {"id": "iv", "iso": "2026-11-04", "when": "约 11/4", "g": "签证", "gc": "visa", "t": "F-1 面签", "n": "口头通过不等于已签发，护照到手才算完成", "u": 1}, {"id": "hw5", "iso": "2026-11-06", "when": "11/6", "g": "学业", "gc": "class", "t": "广告 第5次周作业", "n": "周五 17:00", "u": 0}, {"id": "hw6", "iso": "2026-11-13", "when": "11/13", "g": "学业", "gc": "class", "t": "广告 第6次周作业", "n": "周五 17:00", "u": 0}, {"id": "pres", "iso": "2026-11-16", "when": "11/16–11/22", "g": "学业", "gc": "class", "t": "我的发表（第 12 周）", "n": "全学期只做一次。提前一周准备，3 小时", "u": 1}, {"id": "passport", "iso": "2026-11-18", "when": "约 11/18", "g": "签证", "gc": "visa", "t": "贴签护照寄回到手", "n": "面签后 5–10 工作日。比最晚线早 85 天，缓冲留给 221(g)", "u": 0}, {"id": "adsp-r", "iso": "2026-11-20", "when": "11/20", "g": "资格", "gc": "cert", "t": "ADsP 成绩发表", "n": "上午 10:00", "u": 0}, {"id": "calc-reg", "iso": "2026-11-20", "when": "11/20", "g": "学校", "gc": "dead", "t": "寒假微积分 선수강신청", "n": "<b>必须排在延期申请之前</b>。同一天还有第 7 次周作业截止", "u": 1}, {"id": "hw7", "iso": "2026-11-20", "when": "11/20", "g": "学业", "gc": "class", "t": "广告 第7次周作业", "n": "周五 17:00。和选课同一天", "u": 0}, {"id": "defer", "iso": "2026-11-21", "when": "11/21–11/27", "g": "学校", "gc": "dead", "t": "申请졸업의사（延期）", "n": "选完课之后再做。保住应届生身份与 F-1 说服力", "u": 1}, {"id": "hw8", "iso": "2026-11-27", "when": "11/27", "g": "学业", "gc": "class", "t": "广告 第8次周作业", "n": "周五 17:00。最后一次", "u": 0}, {"id": "prof2", "iso": "2026-12-01", "when": "12 月初", "g": "教授", "gc": "self2", "t": "正式请求推荐信承诺", "n": "附简历、成绩单、读研方向说明。避开期末周", "u": 1}, {"id": "calc-pay", "iso": "2026-12-04", "when": "12 月初", "g": "学校", "gc": "dead", "t": "微积分缴费截止", "n": "缴完才算选课成功", "u": 1}, {"id": "final", "iso": "2026-12-09", "when": "12/9", "g": "学业", "gc": "class", "t": "广告的理解 期末考", "n": "周三 18:30。这周打工降到 2 天", "u": 1}, {"id": "sem-end", "iso": "2026-12-13", "when": "12/13", "g": "学业", "gc": "class", "t": "学期结束", "n": "线代与毕业作品期末也在这周", "u": 0}, {"id": "flight", "iso": "2026-12-15", "when": "F-1 下来后", "g": "行前", "gc": "life", "t": "订单程机票 ICN→LAX", "n": "约 $800。购票很快，不占计划时间", "u": 0}, {"id": "calc", "iso": "2026-12-28", "when": "12/28–1/15", "g": "学业", "gc": "class", "t": "上寒假微积分", "n": "每天 12:30–15:30 周一至周五。打工降到 2 天", "u": 1}, {"id": "sublet", "iso": "2027-01-15", "when": "1 月", "g": "行前", "gc": "life", "t": "找洛杉矶韩国城短租，付押金", "n": "约 $1,000。1/15 微积分结束后再集中处理", "u": 0}, {"id": "goal", "iso": "2027-01-25", "when": "1/25", "g": "钱", "gc": "work", "t": "越过 2,000 万存款目标", "n": "之后还有 24 天在继续存", "u": 0}, {"id": "tuition", "iso": "2027-02-01", "when": "开课前", "g": "签证", "gc": "visa", "t": "缴学费余款", "n": "学费 $6,500 扣掉押金实缴 $5,500，另加服务费 $750 与保险 $1,050", "u": 1}, {"id": "prof3", "iso": "2027-02-05", "when": "2 月上旬", "g": "教授", "gc": "self2", "t": "当面向教授告别，确认后续联系方式", "n": "人在国外再找老师，回复率会低很多", "u": 1}, {"id": "pack", "iso": "2027-02-11", "when": "2/11 起", "g": "行前", "gc": "life", "t": "打包、退租、行政手续", "n": "打工降到 2 天/周", "u": 0}, {"id": "depart", "iso": "2027-02-18", "when": "2/18", "g": "行前", "gc": "life", "t": "飞洛杉矶", "n": "到 2/25 开课只有 7 天", "u": 1}];
+const TODOS=[{"id": "office", "iso": "2026-09-15", "when": "9/15 已完成", "g": "学校", "gc": "class", "t": "去学科办公室问三件事 ✓", "n": "确认无冲突：延期后是从下一个正规学期起不能修学分，계절학기不算正规学期，寒假微积分不受影响。유예 生效时点是 2 月毕业日，不是申请当天。毕业申请公告还没出，10 月中期中考后再留意", "u": 0}, {"id": "drive-q", "iso": "2026-09-16", "when": "9/16", "g": "资格", "gc": "cert", "t": "问驾照学院报价与排课方式", "n": "预算暂按 95 만。重点是能不能约到你空闲的时段", "u": 0}, {"id": "hw1", "iso": "2026-09-18", "when": "9/18", "g": "学业", "gc": "class", "t": "广告 第1次周作业", "n": "周五 17:00 截止。周四上午做完并交", "u": 0}, {"id": "hw2", "iso": "2026-09-25", "when": "9/25", "g": "学业", "gc": "class", "t": "广告 第2次周作业", "n": "周五 17:00", "u": 0}, {"id": "adsp-reg", "iso": "2026-09-28", "when": "9/28–10/2", "g": "资格", "gc": "cert", "t": "在 dataq.or.kr 报名 ADsP 第51回", "n": "窗口只有 5 天。2027 Q1 日程未公布，这很可能是出发前唯一机会", "u": 1}, {"id": "deposit", "iso": "2026-09-15", "when": "9/15 已完成", "g": "签证", "gc": "class", "t": "缴 $1,000 入学押金 ✓", "n": "已缴，I-20 签发时钟已经开始走了", "u": 0}, {"id": "hw3", "iso": "2026-10-02", "when": "10/2", "g": "学业", "gc": "class", "t": "广告 第3次周作业", "n": "周五 17:00", "u": 0}, {"id": "adsp-s1", "iso": "2026-10-05", "when": "10/5–10/18", "g": "资格", "gc": "cert", "t": "ADsP 教材通读＋真题一轮", "n": "每周 6 小时，放在周二周四上午", "u": 0}, {"id": "hw4", "iso": "2026-10-09", "when": "10/9", "g": "学业", "gc": "class", "t": "广告 第4次周作业", "n": "周五 17:00", "u": 0}, {"id": "i20", "iso": "2026-09-25", "when": "约 9/25", "g": "签证", "gc": "visa", "t": "收到 I-20 电子版", "n": "押金 9/15 已缴，7–10 工作日后到手。电子版打印签字即可用，不必等纸质", "u": 0}, {"id": "sevis", "iso": "2026-09-28", "when": "约 9/28", "g": "签证", "gc": "visa", "t": "交 SEVIS I-901 费 $350", "n": "面签前至少 3 个工作日，建议提前 1–2 周", "u": 1}, {"id": "drive-in", "iso": "2026-10-16", "when": "10 月", "g": "资格", "gc": "cert", "t": "报名驾照学院 2종 보통", "n": "约 13 学时。预约制，要连续时段", "u": 0}, {"id": "prof1", "iso": "2026-10-16", "when": "10 月中", "g": "教授", "gc": "self2", "t": "首次接触 CS 与传媒各一位教授", "n": "只表达读研意向，不谈推荐信", "u": 0}, {"id": "ds160", "iso": "2026-10-01", "when": "约 10/1", "g": "签证", "gc": "visa", "t": "DS-160 提交＋缴签证费 $185＋预约面签", "n": "SEVIS 后 3 工作日。首尔 F/M/J 等待不足 15 天", "u": 1}, {"id": "mid", "iso": "2026-10-21", "when": "10/21", "g": "学业", "gc": "class", "t": "广告的理解 中间考", "n": "周三 18:30。这周打工降到 2 天", "u": 1}, {"id": "adsp-s2", "iso": "2026-10-26", "when": "10/26–10/30", "g": "资格", "gc": "cert", "t": "ADsP 冲刺，每天 3 小时刷真题", "n": "期中考结束后立刻开始", "u": 0}, {"id": "adsp-ex", "iso": "2026-10-31", "when": "10/31", "g": "资格", "gc": "cert", "t": "ADsP 考试", "n": "周六 10:00–11:30。这天不排班", "u": 1}, {"id": "iv", "iso": "2026-10-16", "when": "约 10/16", "g": "签证", "gc": "visa", "t": "F-1 面签", "n": "口头通过不等于已签发，护照到手才算完成", "u": 1}, {"id": "hw5", "iso": "2026-11-06", "when": "11/6", "g": "学业", "gc": "class", "t": "广告 第5次周作业", "n": "周五 17:00", "u": 0}, {"id": "hw6", "iso": "2026-11-13", "when": "11/13", "g": "学业", "gc": "class", "t": "广告 第6次周作业", "n": "周五 17:00", "u": 0}, {"id": "pres", "iso": "2026-11-16", "when": "11/16–11/22", "g": "学业", "gc": "class", "t": "我的发表（第 12 周）", "n": "全学期只做一次。提前一周准备，3 小时", "u": 1}, {"id": "passport", "iso": "2026-10-28", "when": "约 10/28", "g": "签证", "gc": "visa", "t": "贴签护照寄回到手", "n": "面签后 5–10 工作日。比出发日早 113 天，缓冲留给 221(g)", "u": 0}, {"id": "adsp-r", "iso": "2026-11-20", "when": "11/20", "g": "资格", "gc": "cert", "t": "ADsP 成绩发表", "n": "上午 10:00", "u": 0}, {"id": "calc-reg", "iso": "2026-11-20", "when": "11/20", "g": "学校", "gc": "dead", "t": "寒假微积分 선수강신청", "n": "<b>必须排在延期申请之前</b>。同一天还有第 7 次周作业截止", "u": 1}, {"id": "hw7", "iso": "2026-11-20", "when": "11/20", "g": "学业", "gc": "class", "t": "广告 第7次周作业", "n": "周五 17:00。和选课同一天", "u": 0}, {"id": "defer", "iso": "2026-11-21", "when": "11/21–11/27", "g": "学校", "gc": "dead", "t": "申请졸업의사（延期）", "n": "选完课之后再做。保住应届生身份与 F-1 说服力", "u": 1}, {"id": "hw8", "iso": "2026-11-27", "when": "11/27", "g": "学业", "gc": "class", "t": "广告 第8次周作业", "n": "周五 17:00。最后一次", "u": 0}, {"id": "prof2", "iso": "2026-12-01", "when": "12 月初", "g": "教授", "gc": "self2", "t": "正式请求推荐信承诺", "n": "附简历、成绩单、读研方向说明。避开期末周", "u": 1}, {"id": "calc-pay", "iso": "2026-12-04", "when": "12 月初", "g": "学校", "gc": "dead", "t": "微积分缴费截止", "n": "缴完才算选课成功", "u": 1}, {"id": "final", "iso": "2026-12-09", "when": "12/9", "g": "学业", "gc": "class", "t": "广告的理解 期末考", "n": "周三 18:30。这周打工降到 2 天", "u": 1}, {"id": "sem-end", "iso": "2026-12-13", "when": "12/13", "g": "学业", "gc": "class", "t": "学期结束", "n": "线代与毕业作品期末也在这周", "u": 0}, {"id": "flight", "iso": "2026-12-15", "when": "F-1 下来后", "g": "行前", "gc": "life", "t": "订单程机票 ICN→LAX", "n": "约 $800。购票很快，不占计划时间", "u": 0}, {"id": "calc", "iso": "2026-12-28", "when": "12/28–1/15", "g": "学业", "gc": "class", "t": "上寒假微积分", "n": "每天 12:30–15:30 周一至周五。打工降到 2 天", "u": 1}, {"id": "sublet", "iso": "2027-01-15", "when": "1 月", "g": "行前", "gc": "life", "t": "找洛杉矶韩国城短租，付押金", "n": "约 $1,000。1/15 微积分结束后再集中处理", "u": 0}, {"id": "goal", "iso": "2027-01-25", "when": "1/25", "g": "钱", "gc": "work", "t": "越过 2,000 万存款目标", "n": "之后还有 24 天在继续存", "u": 0}, {"id": "tuition", "iso": "2027-02-01", "when": "开课前", "g": "签证", "gc": "visa", "t": "缴学费余款", "n": "学费 $6,500 扣掉押金实缴 $5,500，另加服务费 $750 与保险 $1,050", "u": 1}, {"id": "prof3", "iso": "2027-02-05", "when": "2 月上旬", "g": "教授", "gc": "self2", "t": "当面向教授告别，确认后续联系方式", "n": "人在国外再找老师，回复率会低很多", "u": 1}, {"id": "pack", "iso": "2027-02-11", "when": "2/11 起", "g": "行前", "gc": "life", "t": "打包、退租、行政手续", "n": "打工降到 2 天/周", "u": 0}, {"id": "depart", "iso": "2027-02-18", "when": "2/18", "g": "行前", "gc": "life", "t": "飞洛杉矶", "n": "到 2/25 开课只有 7 天", "u": 1}];
 const TODAY=new Date("2026-09-14T00:00:00");
 const DEP=new Date("2027-02-18T00:00:00");
 let state={}, saveFn=null, filter="undone", group="";
@@ -969,7 +971,8 @@ saveFn=()=>{ try{ localStorage.setItem("plan-check",JSON.stringify(state)); }cat
   };
 })();
 /* ---------- 打工日历 ---------- */
-const D0=new Date(2026,8,14), D1=new Date(2027,1,18), LIVE=3300000, GOAL=20000000;
+const D0=new Date(2026,8,14), D1=new Date(2027,1,18), GOAL=20000000;
+let LIVE=3300000;
 const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const mk=(y,m,d)=>new Date(y,m,d);
 function planDay(d){
@@ -992,7 +995,7 @@ function hiDay(d){
 }
 const planAmt=d=>planDay(d)?(hiDay(d)?537000:437000):0;
 
-let earn={}, exp={}, saveE=null, saveX=null, curM=new Date(2026,8,1);
+let earn={}, exp={}, curM=new Date(2026,8,1);
 
 function planTo(end){ // 计划累计收入（含 end 当天）
   let s=0,d=new Date(D0);
@@ -1130,17 +1133,28 @@ function openPop(k){
   pop.classList.add("on"); setTimeout(()=>popI.focus(),40);
 }
 function closePop(){ pop.classList.remove("on"); popKey=null; }
-function saveDay(){
+async function saveDay(){
   if(popKey==null) return;
-  const iv=popI.value, xv=popX2.value;
-  if(iv==="") delete earn[popKey]; else earn[popKey]=Math.round(+iv*10000);
-  if(xv==="") delete exp[popKey]; else exp[popKey]=Math.round(+xv*10000);
-  closePop(); renderWork(); if(saveE) saveE(); if(saveX) saveX();
+  const k=popKey, iv=popI.value, xv=popX2.value;
+  if(iv==="") delete earn[k]; else earn[k]=Math.round(+iv*10000);
+  if(xv==="") delete exp[k]; else exp[k]=Math.round(+xv*10000);
+  closePop(); renderWork();
+  try{
+    if(iv==="") await window.Store.removeByTitle("work","income",k);
+    else await window.Store.upsertByTitle("work","income",{date:k,amount:earn[k]});
+    if(xv==="") await window.Store.removeByTitle("work","expense",k);
+    else await window.Store.upsertByTitle("work","expense",{date:k,amount:exp[k]});
+  }catch(e){ alert("保存到云端失败，先留在这台设备上：\n"+(e.message||e)); }
 }
-function clearDay(){
+async function clearDay(){
   if(popKey==null) return;
-  delete earn[popKey]; delete exp[popKey];
-  closePop(); renderWork(); if(saveE) saveE(); if(saveX) saveX();
+  const k=popKey;
+  delete earn[k]; delete exp[k];
+  closePop(); renderWork();
+  try{
+    await window.Store.removeByTitle("work","income",k);
+    await window.Store.removeByTitle("work","expense",k);
+  }catch(e){ alert("清除失败："+(e.message||e)); }
 }
 document.getElementById("cgrid").addEventListener("click",e=>{
   const c=e.target.closest(".cell"); if(c&&!c.disabled) openPop(c.dataset.k);
@@ -1168,12 +1182,37 @@ document.getElementById("botnav").addEventListener("click",e=>{
   window.dispatchEvent(new CustomEvent("view:switched",{detail:{v:b.dataset.v}}));
 });
 
-/* 存档：收入和支出各自存本机 localStorage */
-try{ const r=localStorage.getItem("plan-earn"); if(r) earn=JSON.parse(r)||{}; }catch(e){}
-try{ const r=localStorage.getItem("plan-expense"); if(r) exp=JSON.parse(r)||{}; }catch(e){}
-renderWork();
-saveE=()=>{ try{ localStorage.setItem("plan-earn",JSON.stringify(earn)); }catch(e){} };
-saveX=()=>{ try{ localStorage.setItem("plan-expense",JSON.stringify(exp)); }catch(e){} };
+/* 存档：收入、支出、生活费标准都存 Supabase（kind="work"），换设备/刷新都在 */
+let workUnsub=null;
+async function loadWork(){
+  earn={}; exp={};
+  let rows=[];
+  try{ rows = await window.Store.list("work"); }catch(e){ rows=[]; }
+  rows.forEach(r=>{
+    if(r.title==="income" && r.date && +r.amount>0) earn[r.date]=Math.round(+r.amount);
+    else if(r.title==="expense" && r.date && +r.amount>0) exp[r.date]=Math.round(+r.amount);
+    else if(r.title==="__setting_living_cost__" && r.amount!=null) LIVE=Math.round(+r.amount);
+  });
+}
+async function bootWork(){
+  await loadWork(); renderWork();
+  if(workUnsub) workUnsub();
+  workUnsub = window.Store.subscribe("work", async()=>{ await loadWork(); renderWork(); });
+}
+renderWork(); // 登录前先渲一次空状态，避免闪烁
+window.addEventListener("app:authed", bootWork);
+if(document.getElementById("appRoot") && !document.getElementById("appRoot").hidden) bootWork();
+
+document.getElementById("kLiveBtn").addEventListener("click", async()=>{
+  const v = prompt("每月生活费标准（만원）", LIVE/10000);
+  if(v===null) return;
+  const n = +v;
+  if(!n || n<=0){ alert("请输入一个正数"); return; }
+  LIVE = Math.round(n*10000);
+  renderWork();
+  try{ await window.Store.upsertByTitle("work","__setting_living_cost__",{date:null,amount:LIVE}); }
+  catch(e){ alert("保存失败，先留在这台设备上：\n"+(e.message||e)); }
+});
 
 /* ---------- 页内问 Claude ---------- */
 const CTX=`你是这个学生规划页面里的助手。用中文回答，简短直接，不要客套。

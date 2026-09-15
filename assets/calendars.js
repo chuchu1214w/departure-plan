@@ -401,6 +401,28 @@ ${fixed.length ? fixed.join("\n") : "（这周没有录入任何固定课程）"
     }
   });
 
+  document.getElementById("stEnglish").addEventListener("click", async (e) => {
+    const btn = e.target.closest("button"); const label = btn.textContent;
+    btn.disabled = true;
+    try {
+      const items = window.SEED_ENGLISH || [];
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        btn.textContent = `添加中…${i+1}/${items.length}`;
+        await window.Store.upsertByTitle("study", it.title, {
+          date: it.date, note: it.note || "",
+          start_at: toIso(it.date, it.start), end_at: toIso(it.date, it.end)
+        });
+      }
+      await refresh("study");
+      btn.textContent = "已添加 ✓";
+      setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 2000);
+    } catch (e2) {
+      alert("添加失败：" + (e2.message || e2));
+      btn.textContent = label; btn.disabled = false;
+    }
+  });
+
   async function doDedupe(kind, btn) {
     btn.disabled = true; const label = btn.textContent; btn.textContent = "清理中…";
     try {

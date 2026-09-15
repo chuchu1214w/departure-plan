@@ -8,7 +8,14 @@
 
   function iso(d) { return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
   function escapeHtml(s) { const d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
-  function loadEarn() { try { earn = JSON.parse(localStorage.getItem("plan-earn") || "{}") || {}; } catch (e) { earn = {}; } }
+  async function loadEarn() {
+    earn = {};
+    if (!window.Store) return;
+    try {
+      const rows = await window.Store.list("work");
+      rows.forEach(r => { if (r.title === "income" && r.date && +r.amount > 0) earn[r.date] = Math.round(+r.amount); });
+    } catch (e) { earn = {}; }
+  }
 
   function statsBetween(fromIso, toIso) {
     // [fromIso, toIso] 闭区间，YYYY-MM-DD 字符串比较即可
@@ -74,7 +81,7 @@
   document.getElementById("rvMPrev").onclick = () => { rvM.setMonth(rvM.getMonth()-1); renderMonth(); };
   document.getElementById("rvMNext").onclick = () => { rvM.setMonth(rvM.getMonth()+1); renderMonth(); };
 
-  function renderAll() { loadEarn(); renderDay(); renderWeek(); renderMonth(); }
+  async function renderAll() { await loadEarn(); renderDay(); renderWeek(); renderMonth(); }
 
   document.getElementById("rvSub").addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return;
@@ -114,7 +121,7 @@
     try { cache.study = await window.Store.list("study"); } catch (e) { cache.study = []; }
   }
 
-  async function boot() { await loadCloud(); renderAll(); }
+  async function boot() { await loadCloud(); await renderAll(); }
   window.addEventListener("app:authed", boot);
   window.addEventListener("view:switched", (e) => { if (e.detail && e.detail.v === "review") boot(); });
   if (document.getElementById("appRoot") && !document.getElementById("appRoot").hidden) boot();

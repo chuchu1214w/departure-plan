@@ -73,12 +73,22 @@ window.Store = (function () {
 
   // 标题一样就改日期/备注，没有这个标题就新建。用来更新「之前导入过的某个里程碑，
   // 日期变了」这种情况，不会跟已有的那条变成两行。
+  // 标题+日期一起匹配（不只是标题）：这样同一个标题在不同日期重复出现
+  // （比如「英语学习」每天一条）也不会互相覆盖，只有同一天同一标题才算
+  // 「已经导入过」，直接更新而不是插入第二条。
   async function upsertByTitle(kind, title, fields) {
     const items = await list(kind);
-    const hit = items.find(x => x.title === title);
+    const hit = items.find(x => x.title === title && x.date === fields.date);
     if (hit) return update(hit.id, fields);
     return add(kind, Object.assign({ title }, fields));
   }
 
-  return { list, add, update, remove, toggleDone, subscribe, dedupe, upsertByTitle };
+  // 标题+日期都对得上才删，找不到就什么也不做（不报错）。
+  async function removeByTitle(kind, title, date) {
+    const items = await list(kind);
+    const hit = items.find(x => x.title === title && x.date === date);
+    if (hit) return remove(hit.id);
+  }
+
+  return { list, add, update, remove, toggleDone, subscribe, dedupe, upsertByTitle, removeByTitle };
 })();
