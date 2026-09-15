@@ -52,5 +52,33 @@ window.Store = (function () {
     return () => sb().removeChannel(channel);
   }
 
-  return { list, add, update, remove, toggleDone, subscribe };
+  // 找出同一个 kind 里标题+日期完全一样的重复行，只留最早那条，其余删掉。
+  // 返回删了几条。
+  async function dedupe(kind) {
+    const items = await list(kind);
+    const groups = {};
+    items.forEach(it => {
+      const key = (it.title || "") + "|" + (it.date || "");
+      (groups[key] = groups[key] || []).push(it);
+    });
+    let removed = 0;
+    for (const key in groups) {
+      const g = groups[key];
+      if (g.length < 2) continue;
+      g.sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
+      for (let i = 1; i < g.length; i++) { await remove(g[i].id); removed++; }
+    }
+    return removed;
+  }
+
+  // 标题一样就改日期/备注，没有这个标题就新建。用来更新「之前导入过的某个里程碑，
+  // 日期变了」这种情况，不会跟已有的那条变成两行。
+  async function upsertByTitle(kind, title, fields) {
+    const items = await list(kind);
+    const hit = items.find(x => x.title === title);
+    if (hit) return update(hit.id, fields);
+    return add(kind, Object.assign({ title }, fields));
+  }
+
+  return { list, add, update, remove, toggleDone, subscribe, dedupe, upsertByTitle };
 })();

@@ -628,6 +628,8 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
  <div class="listbar">
   <button class="addbtn" data-kind="event" id="evAdd">＋ 加一件事</button>
   <button class="addbtn ai" id="evImport" hidden>↓ 导入之前整理好的重大事件</button>
+  <button class="addbtn ai" id="evVisaUpdate">↻ 更新签证时间线（押金改今天）</button>
+  <button class="addbtn" id="evDedupe" style="border-color:var(--alert);color:var(--alert)">清理重复项</button>
  </div>
  <div class="calnav">
   <button id="evPrev" aria-label="上个月">‹</button>
@@ -653,6 +655,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
   <button class="addbtn" data-kind="study" id="stAdd">＋ 加一件事</button>
   <button class="addbtn ai" id="stImport" hidden>↓ 导入之前整理好的学业日程</button>
   <button class="addbtn ai" id="stImportSched">↓ 导入真实课表与线代进度（59 条）</button>
+  <button class="addbtn" id="stDedupe" style="border-color:var(--alert);color:var(--alert)">清理重复项</button>
   <button class="addbtn ai" id="aiGen">✦ 生成本周学习计划</button>
  </div>
 <div id="aiOut" class="call info" style="display:none;white-space:pre-wrap"></div>
@@ -668,6 +671,10 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
    <div class="mi" id="stMinfo"></div>
   </div>
   <div class="cgrid" id="stGrid"></div>
+  <div style="margin-top:18px">
+   <h4 id="stMDayTitle" style="margin:0 0 10px;font-size:14px;color:var(--ink2)"></h4>
+   <div class="todos" id="stMDayList"><div class="empty">点日历上的某一天，看那天的安排</div></div>
+  </div>
  </div>
 
  <div class="stsub" id="st-w">
@@ -849,6 +856,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
 <script src="assets/store.js"></script>
 <script src="assets/seed-data.js"></script>
 <script src="assets/seed-schedule.js"></script>
+<script src="assets/seed-visa-update.js"></script>
 <script src="assets/auth-ui.js"></script>
 <script src="assets/calendars.js"></script>
 <script src="assets/review.js"></script>

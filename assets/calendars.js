@@ -97,6 +97,7 @@
   let stCurM = new Date(); stCurM.setDate(1);
   let stCurW = new Date();
   let stCurD = new Date();
+  let stMSel = iso(new Date());
 
   function renderStudyMonth() {
     const y = stCurM.getFullYear(), m = stCurM.getMonth();
@@ -114,6 +115,7 @@
       const cls = ["cell"];
       if (items.length) cls.push("has");
       if (k === today) cls.push("today");
+      if (k === stMSel) cls.push("sel");
       h += `<button class="${cls.join(" ")}" data-k="${k}">
         <span class="dn2">${dd}</span>
         ${items.length ? `<span class="pl">${items.length} 项</span><span class="dot"></span>` : ""}
@@ -121,14 +123,20 @@
     }
     document.getElementById("stGrid").innerHTML = h;
     document.getElementById("stMinfo").innerHTML = `本月共 <b>${cnt}</b> 项`;
+    renderStudyMonthDay();
+  }
+  function renderStudyMonthDay() {
+    document.getElementById("stMDayTitle").textContent = fmtDateShort(stMSel) + " 的安排";
+    const items = itemsOnDate("study", stMSel).sort((a,b) => (a.start_at||"").localeCompare(b.start_at||""));
+    document.getElementById("stMDayList").innerHTML = items.length ? items.map(row).join("") : '<div class="empty">这天没有安排，点上面「加一件事」补一条</div>';
   }
   document.getElementById("stGrid").addEventListener("click", (e) => {
     const c = e.target.closest(".cell"); if (!c || c.disabled) return;
-    const p = c.dataset.k.split("-").map(Number);
-    stCurD = new Date(p[0], p[1] - 1, p[2]);
-    switchStudySub("d");
-    renderStudyDay();
+    stMSel = c.dataset.k;
+    document.querySelectorAll("#stGrid .cell").forEach(x => x.classList.toggle("sel", x.dataset.k === stMSel));
+    renderStudyMonthDay();
   });
+  wireRowClicks(document.getElementById("stMDayList"), "study");
   document.getElementById("stMPrev").onclick = () => { stCurM.setMonth(stCurM.getMonth()-1); renderStudyMonth(); };
   document.getElementById("stMNext").onclick = () => { stCurM.setMonth(stCurM.getMonth()+1); renderStudyMonth(); };
 
@@ -335,7 +343,7 @@ ${fixed.length ? fixed.join("\n") : "（这周没有录入任何固定课程）"
     const label = "↓ 导入之前整理好的" + (kind === "event" ? "重大事件" : "学业日程");
     if (btn) { btn.disabled = true; btn.textContent = "导入中…"; }
     try {
-      for (const it of seed) await window.Store.add(kind, it);
+      for (const it of seed) await window.Store.upsertByTitle(kind, it.title, { date: it.date, note: it.note || "" });
       await refresh(kind);
     } catch (e) {
       alert("导入失败：" + (e.message || e));
@@ -345,6 +353,34 @@ ${fixed.length ? fixed.join("\n") : "（这周没有录入任何固定课程）"
   document.getElementById("evImport").addEventListener("click", () => doImport("event"));
   document.getElementById("stImport").addEventListener("click", () => doImport("study"));
 
+  document.getElementById("evVisaUpdate").addEventListener("click", async (e) => {
+    const btn = e.target.closest("button"); const label = btn.textContent;
+    btn.disabled = true; btn.textContent = "更新中…";
+    try {
+      for (const it of (window.SEED_VISA_UPDATE || [])) {
+        await window.Store.upsertByTitle("event", it.title, { date: it.date, note: it.note || "" });
+      }
+      await refresh("event");
+      btn.textContent = "已更新 ✓";
+      setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 2000);
+    } catch (e2) {
+      alert("更新失败：" + (e2.message || e2));
+      btn.textContent = label; btn.disabled = false;
+    }
+  });
+
+  async function doDedupe(kind, btn) {
+    btn.disabled = true; const label = btn.textContent; btn.textContent = "清理中…";
+    try {
+      const n = await window.Store.dedupe(kind);
+      await refresh(kind);
+      alert(n ? `删掉了 ${n} 条重复的` : "没找到重复的");
+    } catch (e) { alert("清理失败：" + (e.message || e)); }
+    btn.disabled = false; btn.textContent = label;
+  }
+  document.getElementById("evDedupe").addEventListener("click", (e) => doDedupe("event", e.target.closest("button")));
+  document.getElementById("stDedupe").addEventListener("click", (e) => doDedupe("study", e.target.closest("button")));
+
   async function doImportSchedule() {
     const items = window.SEED_SCHEDULE || [];
     if (!items.length) return;
@@ -352,8 +388,8 @@ ${fixed.length ? fixed.join("\n") : "（这周没有录入任何固定课程）"
     btn.disabled = true; const label = btn.textContent; btn.textContent = "导入中…";
     try {
       for (const it of items) {
-        await window.Store.add("study", {
-          title: it.title, date: it.date, note: it.note || "",
+        await window.Store.upsertByTitle("study", it.title, {
+          date: it.date, note: it.note || "",
           start_at: toIso(it.date, it.start), end_at: toIso(it.date, it.end)
         });
       }
