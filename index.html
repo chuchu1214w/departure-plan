@@ -751,6 +751,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
   <div class="call info" style="margin-top:16px"><b>浅色格是计划上班日，带 ★ 的是高档日（保底 53.7 만）。周日全部空着，办公室公休。</b>
   其余计划日保底 43.7 万。填了钱的格子会变绿。<br><br>
   9/1–9/13 已上 7 天赚 305.8 만，那笔钱已花在生活费上，不计入存款，所以日历从 9/14 开始算。</div>
+  <button class="addbtn" id="impWorkEarly" style="margin-top:12px">↻ 补录 9 月初收入（7 天，只记录不计入存款）</button>
  </div></section>
 
 <section id="wk"><div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>逐月进度</h2></div>
@@ -1301,6 +1302,29 @@ document.getElementById("kLiveBtn").addEventListener("click", async()=>{
   renderWork();
   try{ await window.Store.upsertByTitle("work","__setting_living_cost__",{date:null,amount:LIVE}); }
   catch(e){ alert("保存失败，先留在这台设备上：\n"+(e.message||e)); }
+});
+
+const SEED_WORK_EARLY=[
+  {date:"2026-09-01",amount:360000},
+  {date:"2026-09-02",amount:350000},
+  {date:"2026-09-04",amount:575000},
+  {date:"2026-09-05",amount:483000},
+  {date:"2026-09-07",amount:335000},
+  {date:"2026-09-11",amount:625000},
+  {date:"2026-09-12",amount:330000}
+];
+document.getElementById("impWorkEarly").addEventListener("click", async(e)=>{
+  const btn=e.target.closest("button"), label=btn.textContent;
+  btn.disabled=true;
+  try{
+    for(let i=0;i<SEED_WORK_EARLY.length;i++){
+      const it=SEED_WORK_EARLY[i];
+      btn.textContent=`补录中…${i+1}/${SEED_WORK_EARLY.length}`;
+      await window.Store.upsertByTitle("work","income",{date:it.date,amount:it.amount});
+    }
+    await loadWork(); renderWork();
+    btn.textContent="已补录 ✓"; setTimeout(()=>{ btn.textContent=label; btn.disabled=false; },2000);
+  }catch(e2){ alert("补录失败："+(e2.message||e2)); btn.textContent=label; btn.disabled=false; }
 });
 
 /* ---------- 页内问 Claude ---------- */
