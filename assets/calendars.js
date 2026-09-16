@@ -142,8 +142,8 @@
 
   function mondayOf(d) { const x = new Date(d); const wd = (x.getDay()+6)%7; x.setDate(x.getDate()-wd); x.setHours(0,0,0,0); return x; }
 
-  // 课表格子：08:00–23:30，每 15 分钟一行
-  const TT0 = 8*60, TT1 = 23*60+30, TSTEP = 15;
+  // 课表格子：00:00–24:00，每 15 分钟一行
+  const TT0 = 0, TT1 = 24*60, TSTEP = 15;
   function ttRow(min) { return Math.round((min-TT0)/TSTEP) + 1; }
   function minsOf(iso_) { const d = new Date(iso_); return d.getHours()*60 + d.getMinutes(); }
 
@@ -353,10 +353,19 @@ ${fixed.length ? fixed.join("\n") : "（这周没有录入任何固定课程）"
   document.getElementById("evImport").addEventListener("click", () => doImport("event"));
   document.getElementById("stImport").addEventListener("click", () => doImport("study"));
 
+  // 押金提前到 9/15 交之后，这几条标题相同但日期变了，upsertByTitle 按"标题+日期"匹配，
+  // 找不到旧日期那条就会新插一条，不会覆盖——所以先按旧日期删掉，再按新日期写入。
+  const STALE_VISA_DATES = [
+    { title: "缴 $1,000 入学押金", date: "2026-09-30" },
+    { title: "DS-160 提交＋缴签证费 $185＋预约面签", date: "2026-10-20" },
+    { title: "F-1 面签", date: "2026-11-04" },
+    { title: "护照贴签寄回到手", date: "2026-11-18" }
+  ];
   document.getElementById("evVisaUpdate").addEventListener("click", async (e) => {
     const btn = e.target.closest("button"); const label = btn.textContent;
     btn.disabled = true; btn.textContent = "更新中…";
     try {
+      for (const it of STALE_VISA_DATES) await window.Store.removeByTitle("event", it.title, it.date);
       for (const it of (window.SEED_VISA_UPDATE || [])) {
         await window.Store.upsertByTitle("event", it.title, { date: it.date, note: it.note || "" });
       }
@@ -369,52 +378,14 @@ ${fixed.length ? fixed.join("\n") : "（这周没有录入任何固定课程）"
     }
   });
 
-  document.getElementById("stLAHw").addEventListener("click", async (e) => {
+  document.getElementById("evDriving").addEventListener("click", async (e) => {
     const btn = e.target.closest("button"); const label = btn.textContent;
     btn.disabled = true; btn.textContent = "添加中…";
     try {
-      for (const it of (window.SEED_LA_HW || [])) {
-        await window.Store.upsertByTitle("study", it.title, { date: it.date, note: it.note || "" });
+      for (const it of (window.SEED_DRIVING || [])) {
+        await window.Store.upsertByTitle("event", it.title, { date: it.date, note: it.note || "" });
       }
-      await refresh("study");
-      btn.textContent = "已添加 ✓";
-      setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 2000);
-    } catch (e2) {
-      alert("添加失败：" + (e2.message || e2));
-      btn.textContent = label; btn.disabled = false;
-    }
-  });
-
-  document.getElementById("stAdVideo").addEventListener("click", async (e) => {
-    const btn = e.target.closest("button"); const label = btn.textContent;
-    btn.disabled = true; btn.textContent = "添加中…";
-    try {
-      for (const it of (window.SEED_AD_VIDEO || [])) {
-        await window.Store.upsertByTitle("study", it.title, { date: it.date, note: it.note || "" });
-      }
-      await refresh("study");
-      btn.textContent = "已添加 ✓";
-      setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 2000);
-    } catch (e2) {
-      alert("添加失败：" + (e2.message || e2));
-      btn.textContent = label; btn.disabled = false;
-    }
-  });
-
-  document.getElementById("stEnglish").addEventListener("click", async (e) => {
-    const btn = e.target.closest("button"); const label = btn.textContent;
-    btn.disabled = true;
-    try {
-      const items = window.SEED_ENGLISH || [];
-      for (let i = 0; i < items.length; i++) {
-        const it = items[i];
-        btn.textContent = `添加中…${i+1}/${items.length}`;
-        await window.Store.upsertByTitle("study", it.title, {
-          date: it.date, note: it.note || "",
-          start_at: toIso(it.date, it.start), end_at: toIso(it.date, it.end)
-        });
-      }
-      await refresh("study");
+      await refresh("event");
       btn.textContent = "已添加 ✓";
       setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 2000);
     } catch (e2) {
@@ -434,27 +405,6 @@ ${fixed.length ? fixed.join("\n") : "（这周没有录入任何固定课程）"
   }
   document.getElementById("evDedupe").addEventListener("click", (e) => doDedupe("event", e.target.closest("button")));
   document.getElementById("stDedupe").addEventListener("click", (e) => doDedupe("study", e.target.closest("button")));
-
-  async function doImportSchedule() {
-    const items = window.SEED_SCHEDULE || [];
-    if (!items.length) return;
-    const btn = document.getElementById("stImportSched");
-    btn.disabled = true; const label = btn.textContent; btn.textContent = "导入中…";
-    try {
-      for (const it of items) {
-        await window.Store.upsertByTitle("study", it.title, {
-          date: it.date, note: it.note || "",
-          start_at: toIso(it.date, it.start), end_at: toIso(it.date, it.end)
-        });
-      }
-      await refresh("study");
-      btn.hidden = true;
-    } catch (e) {
-      alert("导入失败：" + (e.message || e));
-      btn.disabled = false; btn.textContent = label;
-    }
-  }
-  document.getElementById("stImportSched").addEventListener("click", doImportSchedule);
 
   // =========================================================
   // 登录后：首次加载 + 实时订阅
