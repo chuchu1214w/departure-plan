@@ -722,11 +722,11 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
   <div class="pig-n">
    <div><span class="pig-big" id="pigAmt">0<small>만 / 2,000 만</small></span></div>
    <p class="pig-sub" id="pigMsg">还没录入任何一天。点下面日历里的日子开始记。</p>
-   <p class="pig-sub" style="font-size:12px;color:var(--ink3);margin-top:-4px">已扣生活费是估算：没填的天数按标准估，填了的天数用你填的真实数字。实际支出/实际结余只算你已经填的真实数字（日常生活费＋重大支出），不含下面的 SCU 相关支出和每月固定支出。</p>
+   <p class="pig-sub" style="font-size:12px;color:var(--ink3);margin-top:-4px">已支出生活费/实际总支出/实际结余都只算你已经填的真实数字（日常生活费＋重大支出），不估算，不含下面的 SCU 相关支出和每月固定支出。"预计达成"是唯一用到估算标准的地方，用来推没填的未来日子。</p>
    <dl class="pig-grid">
     <div class="pg"><dt>已录入</dt><dd id="kDays">0 天</dd></div>
     <div class="pg"><dt>累计收入</dt><dd id="kInc">0 만</dd></div>
-    <button type="button" class="pg" id="kLiveBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>已扣生活费（估算）· 点击改标准</dt><dd id="kLive">0 만</dd></button>
+    <button type="button" class="pg" id="kLiveBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>已支出生活费 · 点击改预测标准</dt><dd id="kLive">0 만</dd></button>
     <button type="button" class="pg" id="kExtraBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>重大支出合计 · 点击管理</dt><dd id="kExtra">0 만</dd></button>
     <button type="button" class="pg" id="kScuBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>SCU相关支出 · 不计入存款</dt><dd id="kScu">0 만</dd></button>
     <button type="button" class="pg" id="kFixedBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>每月固定支出 · 不计入存款</dt><dd id="kFixed">0 만</dd></button>
@@ -1053,16 +1053,14 @@ function stats(){
   const asOf=new Date(Math.min(Math.max(now.getTime(),D0.getTime()),D1.getTime()));
   let inc=0,days=0;
   for(const k in earn){ const v=+earn[k]||0; if(v>0&&k>=iso(D0)){ inc+=v; days++; } }
+  // 已支出生活费：只算你自己在日历上填过的天数，不估算没填的天
   let expTotal=0,expDays=0;
   for(const k in exp){ const v=+exp[k]||0; if(v>0){ expTotal+=v; expDays++; } }
   const elapsed=Math.max(0,Math.round((asOf-D0)/864e5));
-  // 已扣生活费：已经填过的那天用实际数字，没填的天数按月标准摊算
-  let live=0, perDay=LIVE/30.44, d=new Date(D0);
-  while(d<=asOf && d<D1){ const k=iso(d); live += exp[k]!=null ? +exp[k] : perDay; d.setDate(d.getDate()+1); }
   const extrasTotal=extraTotal(asOf);
-  const net=inc-live-extrasTotal;
   const actualSpent=expTotal+extrasTotal;
-  return {inc,days,live,net,asOf,elapsed,planned:planTo(asOf),expTotal,expDays,extrasTotal,actualSpent,netActual:inc-actualSpent};
+  const net=inc-actualSpent;
+  return {inc,days,net,asOf,elapsed,planned:planTo(asOf),expTotal,expDays,extrasTotal,actualSpent};
 }
 function fmt(v){ return (v/10000).toLocaleString("zh-CN",{maximumFractionDigits:0}); }
 
@@ -1079,7 +1077,7 @@ function renderPiggy(){
   document.getElementById("pigAmt").innerHTML=fmt(Math.max(0,s.net))+'<small>만 · 目标 800 만</small>';
   document.getElementById("kDays").textContent=s.days+" 天";
   document.getElementById("kInc").textContent=fmt(s.inc)+" 만";
-  document.getElementById("kLive").textContent="−"+fmt(s.live)+" 만";
+  document.getElementById("kLive").textContent="−"+fmt(s.expTotal)+" 만";
 
   const dv=s.inc-s.planned;
   const de=document.getElementById("kDiff");
@@ -1103,7 +1101,7 @@ function renderPiggy(){
   document.getElementById("kExp").textContent=fmt(s.actualSpent)+" 만";
   const ne=document.getElementById("kNet2");
   if(s.days===0 && s.expDays===0 && s.extrasTotal===0){ ne.textContent="—"; ne.className=""; }
-  else { ne.textContent=(s.netActual>=0?"+":"")+fmt(s.netActual)+" 만"; ne.className=s.netActual>=0?"up":"dn"; }
+  else { ne.textContent=(s.net>=0?"+":"")+fmt(s.net)+" 만"; ne.className=s.net>=0?"up":"dn"; }
   document.getElementById("kExtra").textContent=fmt(s.extrasTotal)+" 만";
   document.getElementById("kScu").textContent=fmt(scuTotal())+" 만";
   document.getElementById("kFixed").textContent=fmt(fixedTotal())+" 만";
@@ -1113,9 +1111,9 @@ function renderPiggy(){
   else if(dv>=0) m.textContent=`已录 ${s.days} 天，比计划多赚 ${fmt(dv)} 만。按这个节奏，出发时会超过目标。`;
   else m.textContent=`已录 ${s.days} 天，比计划少 ${fmt(-dv)} 만。缺口相当于 ${(Math.abs(dv)/450000).toFixed(1)} 天班，还有时间补。`;
   if(s.expDays>0 || s.extrasTotal>0){
-    m.textContent += s.netActual>=0
-      ? ` 花了 ${fmt(s.actualSpent)} 만（含额外支出 ${fmt(s.extrasTotal)} 만），整体还是盈余 ${fmt(s.netActual)} 만。`
-      : ` 花了 ${fmt(s.actualSpent)} 만（含额外支出 ${fmt(s.extrasTotal)} 만），已经超支 ${fmt(-s.netActual)} 만了。`;
+    m.textContent += s.net>=0
+      ? ` 花了 ${fmt(s.actualSpent)} 만（含额外支出 ${fmt(s.extrasTotal)} 만），整体还是盈余 ${fmt(s.net)} 만。`
+      : ` 花了 ${fmt(s.actualSpent)} 만（含额外支出 ${fmt(s.extrasTotal)} 만），已经超支 ${fmt(-s.net)} 만了。`;
   }
 }
 
@@ -1402,7 +1400,7 @@ window.addEventListener("app:authed", bootWork);
 if(document.getElementById("appRoot") && !document.getElementById("appRoot").hidden) bootWork();
 
 document.getElementById("kLiveBtn").addEventListener("click", async()=>{
-  const v = prompt("每月生活费标准（만원）", LIVE/10000);
+  const v = prompt("每月生活费预测标准（만원）\n只用于推没填的未来日子，不影响已支出生活费这个数字", LIVE/10000);
   if(v===null) return;
   const n = +v;
   if(!n || n<=0){ alert("请输入一个正数"); return; }
@@ -1517,7 +1515,7 @@ function liveCtx(){
   return `【她的实时数据】
 待办 ${TODOS.length} 项，已完成 ${done.length} 项：${done.map(t=>t.t).join("、")||"（无）"}
 最近未完成：${soon.join("；")||"（无）"}
-打工已录入 ${s.days} 天，累计收入 ${(s.inc/10000).toFixed(1)}만，已扣生活费 ${(s.live/10000).toFixed(1)}만，当前净存 ${(s.net/10000).toFixed(1)}만
+打工已录入 ${s.days} 天，累计收入 ${(s.inc/10000).toFixed(1)}만，已支出生活费 ${(s.expTotal/10000).toFixed(1)}만，当前净存 ${(s.net/10000).toFixed(1)}만
 对比计划：${s.inc>=s.planned?"超前":"落后"} ${(Math.abs(s.inc-s.planned)/10000).toFixed(1)}만
 录入明细：${ent.length?ent.map(([k,v])=>k+"="+(v/10000).toFixed(1)).join(" "):"（无）"}`;
 }
