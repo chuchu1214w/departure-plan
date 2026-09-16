@@ -731,6 +731,7 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
     <button type="button" class="pg" id="kLiveBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>已扣生活费 · 点击改月标准</dt><dd id="kLive">0 만</dd></button>
     <button type="button" class="pg" id="kExtraBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>本月额外支出 · 点击管理</dt><dd id="kExtra">0 만</dd></button>
     <button type="button" class="pg" id="kScuBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>SCU相关支出 · 不计入存款</dt><dd id="kScu">0 만</dd></button>
+    <button type="button" class="pg" id="kFixedBtn" style="text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;width:100%;display:block"><dt>每月固定支出 · 点击管理</dt><dd id="kFixed">0 만</dd></button>
     <div class="pg"><dt>对比计划</dt><dd id="kDiff">—</dd></div>
     <div class="pg"><dt>预计达成</dt><dd id="kEta">—</dd></div>
     <div class="pg"><dt>实际支出</dt><dd id="kExp">0 만</dd></div>
@@ -846,6 +847,20 @@ $8,300 是三笔的总额：学费 $6,500、学校服务费 $750、强制医疗�
  <div class="pop-a" style="margin-top:14px">
   <button id="exCancel">关闭</button>
   <button id="exAdd" class="pri2">添加</button>
+ </div>
+</div></div>
+
+<div class="pop" id="fixedPop"><div class="pop-c" style="max-width:380px">
+ <h4>每月固定支出</h4><div class="pd">订阅、话费、保险这类每月固定扣款，跟"重大支出"分开记，不用每次填日期</div>
+ <div class="todos" id="fixedList" style="margin-bottom:14px;max-height:280px;overflow-y:auto"></div>
+ <button class="addbtn" id="impFixed" style="width:100%;margin-bottom:14px">↻ 导入已整理好的订阅/固定支出清单（9 项）</button>
+ <div style="font-size:11.5px;color:var(--ink3);margin:2px 0 4px;text-align:left">每月金额（만원）</div>
+ <input id="fxAmt" type="number" inputmode="decimal" step="0.1" min="0" placeholder="0">
+ <div style="font-size:11.5px;color:var(--ink3);margin:12px 0 4px;text-align:left">项目 / 备注</div>
+ <input id="fxNote" type="text" placeholder="比如：Netflix · 新韩卡" style="width:100%;font-family:inherit;font-size:15px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--line2);background:var(--paper);box-sizing:border-box">
+ <div class="pop-a" style="margin-top:14px">
+  <button id="fxCancel">关闭</button>
+  <button id="fxAdd" class="pri2">添加</button>
  </div>
 </div></div>
 
@@ -1017,7 +1032,7 @@ function hiDay(d){
 }
 const planAmt=d=>planDay(d)?(hiDay(d)?537000:437000):0;
 
-let earn={}, exp={}, extras=[], extrasScu=[], curM=new Date(2026,8,1);
+let earn={}, exp={}, extras=[], extrasScu=[], fixed=[], curM=new Date(2026,8,1);
 const isScuNote=n=>/scu/i.test(n||"");
 
 function planTo(end){ // 计划累计收入（含 end 当天）
@@ -1032,6 +1047,10 @@ function extraTotal(upTo){ // 到某天为止，所有个人重大支出合计�
 }
 function scuTotal(){ // SCU相关支出合计，不影响存款进度，纯记录
   let t=0; extrasScu.forEach(e=>{ t+=(+e.amount||0); });
+  return t;
+}
+function fixedTotal(){ // 每月固定支出（订阅/话费/保险）合计，纯记录参考，不影响存款进度
+  let t=0; fixed.forEach(e=>{ t+=(+e.amount||0); });
   return t;
 }
 function extraInMonth(y,m){
@@ -1098,6 +1117,7 @@ function renderPiggy(){
   else { ne.textContent=(s.netActual>=0?"+":"")+fmt(s.netActual)+" 만"; ne.className=s.netActual>=0?"up":"dn"; }
   document.getElementById("kExtra").textContent=fmt(extraInMonth(curM.getFullYear(),curM.getMonth()))+" 만";
   document.getElementById("kScu").textContent=fmt(scuTotal())+" 만";
+  document.getElementById("kFixed").textContent=fmt(fixedTotal())+" 만";
 
   const m=document.getElementById("pigMsg");
   if(s.days===0) m.textContent="还没录入任何一天。点下面日历里的日子开始记。";
@@ -1288,6 +1308,73 @@ document.getElementById("extraListScu").addEventListener("click", async e=>{
   catch(e2){ extrasScu=before; renderWork(); renderExtraList(); alert("删除失败："+(e2.message||e2)); }
 });
 
+/* 每月固定支出：订阅、话费、保险这类每月都有的固定扣款，不分日期，纯记录参考 */
+const fixedPop=document.getElementById("fixedPop");
+function renderFixedList(){
+  const el=document.getElementById("fixedList");
+  el.innerHTML = fixed.length ? fixed.map(e=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)">
+      <div style="flex:1;min-width:0"><span class="ti">${(e.note||"（无备注）").replace(/</g,"&lt;")}</span></div>
+      <div style="font-weight:700;color:var(--alert);white-space:nowrap">-${(e.amount/10000).toFixed(1)} 만</div>
+      <button class="del-x" data-id="${e.id}" aria-label="删除">×</button>
+    </div>`).join("") : '<div class="empty">还没记过固定支出</div>';
+}
+function openFixedPop(){ renderFixedList(); document.getElementById("fxAmt").value=""; document.getElementById("fxNote").value=""; fixedPop.classList.add("on"); }
+function closeFixedPop(){ fixedPop.classList.remove("on"); }
+document.getElementById("kFixedBtn").addEventListener("click", openFixedPop);
+document.getElementById("fxCancel").addEventListener("click", closeFixedPop);
+fixedPop.addEventListener("click", e=>{ if(e.target===fixedPop) closeFixedPop(); });
+document.getElementById("fxAdd").addEventListener("click", async()=>{
+  const av=document.getElementById("fxAmt").value, nv=document.getElementById("fxNote").value.trim();
+  const n=+av;
+  if(!n || n<=0){ alert("先填金额"); return; }
+  const amount=Math.round(n*10000);
+  const local={id:"tmp-"+Date.now(), note:nv, amount};
+  fixed.push(local); renderWork(); renderFixedList();
+  document.getElementById("fxAmt").value=""; document.getElementById("fxNote").value="";
+  try{
+    const row=await window.Store.add("work",{title:"fixed_expense", date:null, note:nv, amount});
+    local.id=row.id;
+  }catch(e){
+    fixed=fixed.filter(x=>x!==local); renderWork(); renderFixedList();
+    alert("保存失败："+(e.message||e));
+  }
+});
+document.getElementById("fixedList").addEventListener("click", async e=>{
+  const b=e.target.closest(".del-x"); if(!b) return;
+  const id=b.dataset.id;
+  const before=fixed;
+  fixed=fixed.filter(x=>x.id!==id); renderWork(); renderFixedList();
+  if(id.startsWith("tmp-")) return;
+  try{ await window.Store.remove(id); }
+  catch(e2){ fixed=before; renderWork(); renderFixedList(); alert("删除失败："+(e2.message||e2)); }
+});
+const SEED_FIXED=[
+  {note:"Claude · 三星卡 · 原价 US$22，你确认保留",amount:31746},
+  {note:"ChatGPT · 三星卡 · 原价 ₩29,000，你确认保留",amount:29256},
+  {note:"熊猫 VIP · 三星卡有扣款记录（此前截图显示 KakaoPay），渠道待核对，只算一份",amount:4900},
+  {note:"Baemin Club · Toss 银行卡经 Toss Pay · 连续月费已核实",amount:1990},
+  {note:"三星卡手机通知服务 · 三星卡 · 每月通知服务费",amount:700},
+  {note:"Netflix／网飞 · 新韩卡 · 你已确认",amount:7000},
+  {note:"Coupang WOW · KakaoPay · 你已确认",amount:7890},
+  {note:"牙齿保险 · Toss 银行账户代扣",amount:27821},
+  {note:"话费 · 新韩卡",amount:80000}
+];
+document.getElementById("impFixed").addEventListener("click", async(e)=>{
+  const btn=e.target.closest("button"), label=btn.textContent;
+  btn.disabled=true;
+  try{
+    for(let i=0;i<SEED_FIXED.length;i++){
+      const it=SEED_FIXED[i];
+      btn.textContent=`导入中…${i+1}/${SEED_FIXED.length}`;
+      const dup=fixed.some(x=>x.note===it.note && +x.amount===it.amount);
+      if(!dup) await window.Store.add("work",{title:"fixed_expense", date:null, note:it.note, amount:it.amount});
+    }
+    await loadWork(); renderWork(); renderFixedList();
+    btn.textContent="已导入 ✓"; setTimeout(()=>{ btn.textContent=label; btn.disabled=false; },2000);
+  }catch(e2){ alert("导入失败："+(e2.message||e2)); btn.textContent=label; btn.disabled=false; }
+});
+
 /* 底部导航切换 */
 document.getElementById("botnav").addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b) return;
@@ -1304,7 +1391,7 @@ async function loadWork(){
   earn={}; exp={};
   let rows=[];
   try{ rows = await window.Store.list("work"); }catch(e){ rows=[]; }
-  extras=[]; extrasScu=[];
+  extras=[]; extrasScu=[]; fixed=[];
   rows.forEach(r=>{
     if(r.title==="income" && r.date && +r.amount>0) earn[r.date]=Math.round(+r.amount);
     else if(r.title==="expense" && r.date && +r.amount>0) exp[r.date]=Math.round(+r.amount);
@@ -1313,6 +1400,7 @@ async function loadWork(){
       const it={id:r.id, date:r.date, note:r.note||"", amount:+r.amount||0};
       (isScuNote(it.note) ? extrasScu : extras).push(it);
     }
+    else if(r.title==="fixed_expense") fixed.push({id:r.id, note:r.note||"", amount:+r.amount||0});
   });
 }
 async function bootWork(){
