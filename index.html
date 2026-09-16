@@ -503,9 +503,8 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink3);font-
  <p class="sub">语言班已于 9 月 14 日报名，正等录取与 I-20。目标四件：线代与微积分成绩、南加大与签证申请无误、驾照、存款 800 万。勾选会自动保存，下次打开还在。</p>
 </header>
 
-<div class="call ok" id="motCard" role="button" tabindex="0" aria-label="点一下换一句" style="cursor:pointer;margin-bottom:18px">
- <div id="motText"></div>
- <div id="motDots" style="display:flex;gap:5px;justify-content:center;margin-top:10px"></div>
+<div class="call ok" id="motCard" style="margin-bottom:18px">
+ <div id="motText" style="display:flex;flex-direction:column;gap:10px"></div>
 </div>
 
 <section id="now"><div class="sec-h" role="button" tabindex="0" aria-expanded="true"><span class="tw">▼</span><h2>现在要做</h2><span class="cnt" id="nowc"></span></div>
@@ -1367,21 +1366,14 @@ document.getElementById("impFixed").addEventListener("click", async(e)=>{
   }catch(e2){ alert("导入失败："+(e2.message||e2)); btn.textContent=label; btn.disabled=false; }
 });
 
-/* 计划页顶部提醒卡：点一下换一句 */
+/* 计划页顶部提醒卡：三句一起显示 */
+const MOT_B='font-weight:800;font-size:1.08em';
 const MOT_QUOTES=[
-  `你背不下来的书，<b>总有人能背下来</b>；你做不出来的题，<b>总有人能做出来</b>。`,
+  `你背不下来的书，<b style="${MOT_B}">总有人能背下来</b>；你做不出来的题，<b style="${MOT_B}">总有人能做出来</b>。`,
   `你愿意拖到明天的事，总有人今天努力做完——那么不好意思，`,
-  `你想去的学校，<b>也只能别人去了</b>；你想过的人生，<b>也只能别人过了</b>。`
+  `你想去的学校，<b style="${MOT_B}">也只能别人去了</b>；你想过的人生，<b style="${MOT_B}">也只能别人过了</b>。`
 ];
-let motIdx=0;
-function renderMot(){
-  document.getElementById("motText").innerHTML=MOT_QUOTES[motIdx];
-  document.getElementById("motDots").innerHTML=MOT_QUOTES.map((_,i)=>
-    `<span style="width:5px;height:5px;border-radius:50%;background:${i===motIdx?"var(--class)":"var(--class-bd)"}"></span>`).join("");
-}
-document.getElementById("motCard").addEventListener("click",()=>{ motIdx=(motIdx+1)%MOT_QUOTES.length; renderMot(); });
-document.getElementById("motCard").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); motIdx=(motIdx+1)%MOT_QUOTES.length; renderMot(); } });
-renderMot();
+document.getElementById("motText").innerHTML=MOT_QUOTES.map(q=>`<div>${q}</div>`).join("");
 
 /* 底部导航切换 */
 document.getElementById("botnav").addEventListener("click",e=>{
